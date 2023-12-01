@@ -1,0 +1,3 @@
+- Push to GitHub
+- Deploy to samharvey.com.au
+- Set up routes
