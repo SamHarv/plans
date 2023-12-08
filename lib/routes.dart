@@ -1,5 +1,6 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:plans/models/task.dart';
 
 import 'pages/home_page.dart';
 import 'pages/subtask_view.dart';
@@ -19,13 +20,14 @@ final routerDelegate = BeamerDelegate(
         );
       },
       '/task-view': (context, state, data) {
-        return const BeamPage(
-          key: ValueKey('task-view'),
+        return BeamPage(
+          key: const ValueKey('task-view'),
           type: BeamPageType.fadeTransition,
-          title: 'Task View',
-          child: TaskView(),
+          title: '$data.taskHeading',
+          child: TaskView(task: data as Task, taskID: data.taskID),
         );
       },
+
       '/subtask-view': (context, state, data) {
         return const BeamPage(
           key: ValueKey('subtask-view'),

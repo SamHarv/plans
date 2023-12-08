@@ -1,3 +1,4 @@
-- Push to GitHub
-- Deploy to samharvey.com.au
-- Set up routes
+- Build TaskView and SubtaskView Pages
+- Add FAB to add tasks
+- Implement Task model
+- Implement Firestore

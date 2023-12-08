@@ -1,42 +1,81 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import '../widgets/task_box.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../models/task.dart';
 
-class TasksReorderable extends StatefulWidget {
+class TasksReorderable extends ConsumerStatefulWidget {
   const TasksReorderable({super.key});
 
   @override
-  State<TasksReorderable> createState() => _TasksReorderableState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _TasksReorderableState();
 }
 
-class _TasksReorderableState extends State<TasksReorderable> {
-  final List<TaskBox> tasks = [
-    const TaskBox(
-      boxColour: Colors.red,
-      heading: '1',
+class _TasksReorderableState extends ConsumerState<TasksReorderable> {
+  final tasks = [
+    Task(
+      taskID: "0",
+      taskColour: Colors.red,
+      taskHeading: "Task 1",
+      taskContents: "This is the first task",
+      taskTag: "Tag 1",
+      taskPriority: "High",
     ),
-    const TaskBox(
-      boxColour: Colors.orange,
-      heading: '2',
+    Task(
+      taskID: "1",
+      taskColour: Colors.blue,
+      taskHeading: "Task 2",
+      taskContents: "This is the second task",
+      taskTag: "Tag 2",
+      taskPriority: "Medium",
     ),
-    const TaskBox(
-      boxColour: Colors.yellow,
-      heading: '3',
+    Task(
+      taskID: "2",
+      taskColour: Colors.green,
+      taskHeading: "Task 3",
+      taskContents: "This is the third task",
+      taskTag: "Tag 3",
+      taskPriority: "Low",
     ),
-    const TaskBox(
-      boxColour: Colors.green,
-      heading: '4',
+    Task(
+      taskID: "3",
+      taskColour: Colors.yellow,
+      taskHeading: "Task 4",
+      taskContents: "This is the fourth task",
+      taskTag: "Tag 4",
+      taskPriority: "High",
     ),
-    const TaskBox(
-      boxColour: Colors.blue,
-      heading: '5',
+    Task(
+      taskID: "4",
+      taskColour: Colors.purple,
+      taskHeading: "Task 5",
+      taskContents: "This is the fifth task",
+      taskTag: "Tag 5",
+      taskPriority: "Medium",
     ),
-    const TaskBox(
-      boxColour: Colors.indigo,
-      heading: '6',
+    Task(
+      taskID: "5",
+      taskColour: Colors.orange,
+      taskHeading: "Task 6",
+      taskContents: "This is the sixth task",
+      taskTag: "Tag 6",
+      taskPriority: "Low",
     ),
-    const TaskBox(
-      boxColour: Colors.pinkAccent,
-      heading: '7',
+    Task(
+      taskID: "6",
+      taskColour: Colors.blueGrey,
+      taskHeading: "Task 7",
+      taskContents: "This is the seventh task",
+      taskTag: "Tag 7",
+      taskPriority: "High",
+    ),
+    Task(
+      taskID: "7",
+      taskColour: Colors.teal,
+      taskHeading: "Task 8",
+      taskContents: "This is the eighth task",
+      taskTag: "Tag 8",
+      taskPriority: "Medium",
     ),
   ];
 
@@ -47,7 +86,7 @@ class _TasksReorderableState extends State<TasksReorderable> {
         if (newIndex > oldIndex) {
           newIndex--;
         }
-        final TaskBox task = tasks.removeAt(oldIndex);
+        final Task task = tasks.removeAt(oldIndex);
         tasks.insert(newIndex, task);
       });
     }
@@ -60,19 +99,45 @@ class _TasksReorderableState extends State<TasksReorderable> {
           InkResponse(
             key: ValueKey(task),
             onTap: () {
-              updateOrder(1, 5);
-              updateOrder(0, 4);
-              updateOrder(2, 3);
-              updateOrder(3, 6);
-              updateOrder(4, 1);
-              updateOrder(5, 2);
-              updateOrder(6, 7);
+              final destinationTask = Task(
+                taskColour: task.taskColour,
+                taskHeading: task.taskHeading,
+                taskContents: task.taskContents,
+                taskTag: task.taskTag,
+                taskPriority: task.taskPriority,
+                taskID: task.taskID,
+              );
+              // if (task has subtasks) {
+              // Navigate to subtask display taking task as argument;
+              // } else {
+              // Navigate to task display taking task as argument;
+              // }
+              // Open corresponding task
+              Beamer.of(context)
+                  .beamToNamed('/task-view', data: destinationTask);
             },
             child: SizedBox(
               //key: ValueKey(task),
               height: 100,
               width: double.infinity,
-              child: task,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: task.taskColour,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Center(
+                    child: Text(
+                      task.taskHeading,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
       ],

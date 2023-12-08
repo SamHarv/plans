@@ -1,9 +1,11 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './constants.dart';
-import 'pages/home_page.dart';
+import 'routes.dart';
 
 void main() {
-  runApp(const Plans());
+  runApp(const ProviderScope(child: Plans()));
 }
 
 class Plans extends StatelessWidget {
@@ -11,15 +13,16 @@ class Plans extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Plans',
       debugShowCheckedModeBanner: false,
+      routerDelegate: routerDelegate,
+      routeInformationParser: BeamerParser(),
       theme: ThemeData(
         useMaterial3: true,
         colorSchemeSeed: colour,
       ),
       themeMode: ThemeMode.dark,
-      home: const HomePage(),
     );
   }
 }
