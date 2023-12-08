@@ -1,4 +1,14 @@
-- Build TaskView and SubtaskView Pages
-- Add FAB to add tasks
-- Implement Task model
+- Create themed alert dialog widget
+- Implement alert dialog for filter, colour palette, tag, and delete icons
+- Implement URL launcher for O2Tech logo
+- Implement auth page to be navigated to via profile icon
+
+- Work out how to implement subtasks
+
+- Add FAB to add tasks (bottom left)
+- Implement delete button and swipe to delete
 - Implement Firestore
+
+- Implement colour palette with softer colours
+- Implement tag to add tag to tasks
+- Implement filter to filter tasks by tags, title or content

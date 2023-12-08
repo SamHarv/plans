@@ -9,13 +9,11 @@ class MyTextField extends StatelessWidget {
     required this.fontSize,
     required this.style,
     this.height,
-    this.keyboardType,
   }) : super(key: key);
 
   final double? height;
   final TextEditingController controller;
   final String hintText;
-  final TextInputType? keyboardType;
   final int? maxLines;
   final double fontSize;
   final TextStyle style;
@@ -28,7 +26,6 @@ class MyTextField extends StatelessWidget {
       child: TextField(
         maxLines: maxLines,
         controller: controller,
-        keyboardType: keyboardType,
         style: style,
         decoration: InputDecoration(
           hintText: hintText,

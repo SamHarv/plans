@@ -16,7 +16,7 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
   final tasks = [
     Task(
       taskID: "0",
-      taskColour: Colors.red,
+      taskColour: blue,
       taskHeading: "Task 1",
       taskContents: "This is the first task",
       taskTag: "Tag 1",
@@ -24,7 +24,7 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
     ),
     Task(
       taskID: "1",
-      taskColour: Colors.blue,
+      taskColour: red,
       taskHeading: "Task 2",
       taskContents: "",
       taskTag: "Tag 2",
@@ -40,7 +40,7 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
     ),
     Task(
       taskID: "3",
-      taskColour: Colors.yellow,
+      taskColour: yellow,
       taskHeading: "Task 4",
       taskContents: "This is the fourth task",
       taskTag: "Tag 4",
@@ -48,7 +48,7 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
     ),
     Task(
       taskID: "4",
-      taskColour: Colors.green,
+      taskColour: green,
       taskHeading: "Task 5",
       taskContents: "This is the fifth task",
       taskTag: "Tag 5",
@@ -56,7 +56,7 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
     ),
     Task(
       taskID: "5",
-      taskColour: Colors.orange,
+      taskColour: orange,
       taskHeading: "Task 6",
       taskContents: "This is the sixth task",
       taskTag: "Tag 6",
@@ -64,7 +64,7 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
     ),
     Task(
       taskID: "6",
-      taskColour: Colors.blueGrey,
+      taskColour: blueGrey,
       taskHeading: "Task 7",
       taskContents: "This is the seventh task",
       taskTag: "Tag 7",
@@ -72,11 +72,27 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
     ),
     Task(
       taskID: "7",
-      taskColour: Colors.teal,
+      taskColour: brown,
       taskHeading: "Task 8",
       taskContents: "This is the eighth task",
       taskTag: "Tag 8",
       taskPriority: "Medium",
+    ),
+    Task(
+      taskID: "8",
+      taskColour: pink,
+      taskHeading: "Task 9",
+      taskContents: "This is the ninth task",
+      taskTag: "Tag 9",
+      taskPriority: "Medium",
+    ),
+    Task(
+      taskID: "9",
+      taskColour: black,
+      taskHeading: "Task 10",
+      taskContents: "This is the tenth task",
+      taskTag: "Tag 10",
+      taskPriority: "High",
     ),
   ];
 
@@ -126,7 +142,7 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
                 child: Container(
                   decoration: BoxDecoration(
                     color: task.taskColour,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(64),
                     border: Border.all(
                       color:
                           task.taskColour == colour ? Colors.blueGrey : colour,

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:plans/widgets/palette_colour.dart';
 
 import '../constants.dart';
 import '../models/task.dart';
 import '../widgets/custom_text_field.dart';
+import '../widgets/dialog.dart';
 
 class TaskView extends StatelessWidget {
   final Task task;
@@ -41,7 +43,65 @@ class TaskView extends StatelessWidget {
               Icons.color_lens,
               color: Colors.white,
             ),
-            onPressed: () {},
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => PlansDialog(
+                  dialogHeading: 'Pick a Colour',
+                  dialogContent: const Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          PaletteColour(paletteColour: blue),
+                          PaletteColour(paletteColour: red),
+                          PaletteColour(paletteColour: green),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          PaletteColour(paletteColour: blueGrey),
+                          PaletteColour(paletteColour: yellow),
+                          PaletteColour(paletteColour: orange),
+                          PaletteColour(paletteColour: colour)
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          PaletteColour(paletteColour: brown),
+                          PaletteColour(paletteColour: pink),
+                          PaletteColour(paletteColour: black),
+                        ],
+                      ),
+                    ],
+                  ),
+                  dialogActions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        'Cancel',
+                        style: bodyStyle,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        'Go',
+                        style: bodyStyle,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
           IconButton(
             icon: const Icon(
