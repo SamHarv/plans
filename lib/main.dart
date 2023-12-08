@@ -21,6 +21,7 @@ class Plans extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         colorSchemeSeed: colour,
+        fontFamily: 'Roboto',
       ),
       themeMode: ThemeMode.dark,
     );

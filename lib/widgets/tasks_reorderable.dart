@@ -1,6 +1,7 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:plans/constants.dart';
 import '../models/task.dart';
 
 class TasksReorderable extends ConsumerStatefulWidget {
@@ -25,13 +26,13 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
       taskID: "1",
       taskColour: Colors.blue,
       taskHeading: "Task 2",
-      taskContents: "This is the second task",
+      taskContents: "",
       taskTag: "Tag 2",
       taskPriority: "Medium",
     ),
     Task(
       taskID: "2",
-      taskColour: Colors.green,
+      taskColour: colour,
       taskHeading: "Task 3",
       taskContents: "This is the third task",
       taskTag: "Tag 3",
@@ -47,7 +48,7 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
     ),
     Task(
       taskID: "4",
-      taskColour: Colors.purple,
+      taskColour: Colors.green,
       taskHeading: "Task 5",
       taskContents: "This is the fifth task",
       taskTag: "Tag 5",
@@ -126,14 +127,16 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
                   decoration: BoxDecoration(
                     color: task.taskColour,
                     borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color:
+                          task.taskColour == colour ? Colors.blueGrey : colour,
+                      width: 1,
+                    ),
                   ),
                   child: Center(
                     child: Text(
                       task.taskHeading,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        color: Colors.white,
-                      ),
+                      style: headingStyle,
                     ),
                   ),
                 ),

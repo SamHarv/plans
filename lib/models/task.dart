@@ -1,27 +1,28 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:plans/constants.dart';
 
 class Task {
   String taskID;
   Color taskColour;
   String taskHeading;
   String taskContents;
-  String taskTag;
-  String taskPriority;
+  String? taskTag;
+  String? taskPriority;
 
   Task({
     required this.taskID,
-    required this.taskColour,
-    required this.taskHeading,
-    required this.taskContents,
-    required this.taskTag,
-    required this.taskPriority,
+    this.taskColour = colour,
+    this.taskHeading = "",
+    this.taskContents = "",
+    this.taskTag,
+    this.taskPriority,
   });
 
   // generate random task ID betweem 0 and 999999
-  void generateTaskID() {
-    taskID = Random().nextInt(999999).toString();
+  String generateTaskID() {
+    return Random().nextInt(999999).toString();
   }
 
   Color getTaskColour() {
@@ -40,11 +41,11 @@ class Task {
     return taskID;
   }
 
-  String getTaskPriority() {
+  String? getTaskPriority() {
     return taskPriority;
   }
 
-  String getTaskTag() {
+  String? getTaskTag() {
     return taskTag;
   }
 

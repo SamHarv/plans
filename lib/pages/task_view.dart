@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 
 import '../constants.dart';
 import '../models/task.dart';
+import '../widgets/custom_text_field.dart';
 
 class TaskView extends StatelessWidget {
   final Task task;
   final String taskID;
+  late final TextEditingController headingController =
+      TextEditingController(text: task.taskHeading);
+  late final TextEditingController bodyController =
+      TextEditingController(text: task.taskContents);
 
-  const TaskView({
+  TaskView({
     super.key,
     required this.task,
     required this.taskID,
@@ -15,16 +20,12 @@ class TaskView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mediaHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Plans',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 24,
-          ),
-        ),
-        backgroundColor: colour,
+        title: const Text('Plans', style: headingStyle),
+        backgroundColor: task.taskColour,
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back,
@@ -58,29 +59,31 @@ class TaskView extends StatelessWidget {
           ),
         ],
       ),
-      backgroundColor: colour,
+      backgroundColor: task.taskColour,
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
             Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                task.taskHeading,
-                style: const TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
-                ),
-              ),
-            ),
+                alignment: Alignment.topLeft,
+                child: MyTextField(
+                  controller: headingController,
+                  hintText: "Click here to add heading",
+                  maxLines: 1,
+                  fontSize: 24,
+                  style: headingStyle,
+                )),
             const Divider(),
-            Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                task.taskContents,
-                style: const TextStyle(
+            SingleChildScrollView(
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: MyTextField(
+                  controller: bodyController,
+                  hintText: "Click here to add notes",
+                  maxLines: null,
                   fontSize: 18,
-                  color: Colors.white,
+                  style: bodyStyle,
+                  height: mediaHeight - 180,
                 ),
               ),
             ),

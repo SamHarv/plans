@@ -13,9 +13,7 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           'Plans',
-          style: TextStyle(
-            color: Colors.white,
-          ),
+          style: headingStyle,
         ),
         backgroundColor: colour,
       ),
