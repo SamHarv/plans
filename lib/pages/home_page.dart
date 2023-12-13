@@ -4,6 +4,7 @@ import 'package:plans/widgets/dialog.dart';
 import 'package:plans/widgets/tasks_reorderable.dart';
 
 import '../constants.dart';
+import '../models/task.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -77,6 +78,22 @@ class HomePage extends StatelessWidget {
       body: const Padding(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: TasksReorderable(),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.white,
+        onPressed: () {
+          // Create blank new task
+          final newTask = Task(
+            taskColour: colour,
+            taskID: '0000',
+          );
+          // Navigate to blank task view
+          Beamer.of(context).beamToNamed('/task-view', data: newTask);
+        },
+        child: const Icon(
+          Icons.add,
+          color: colour,
+        ),
       ),
     );
   }

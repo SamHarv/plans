@@ -8,16 +8,14 @@ class Task {
   Color taskColour;
   String taskHeading;
   String taskContents;
-  String? taskTag;
-  String? taskPriority;
+  String taskTag;
 
   Task({
     required this.taskID,
     this.taskColour = colour,
     this.taskHeading = "",
     this.taskContents = "",
-    this.taskTag,
-    this.taskPriority,
+    this.taskTag = "",
   });
 
   // generate random task ID betweem 0 and 999999
@@ -41,10 +39,6 @@ class Task {
     return taskID;
   }
 
-  String? getTaskPriority() {
-    return taskPriority;
-  }
-
   String? getTaskTag() {
     return taskTag;
   }
@@ -63,10 +57,6 @@ class Task {
 
   void setTaskID(String newID) {
     taskID = newID;
-  }
-
-  void setTaskPriority(String newPriority) {
-    taskPriority = newPriority;
   }
 
   void setTaskTag(String newTag) {

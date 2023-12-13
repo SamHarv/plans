@@ -3,6 +3,7 @@ import 'package:plans/widgets/palette_colour.dart';
 
 import '../constants.dart';
 import '../models/task.dart';
+import '../services/firestore.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/dialog.dart';
 
@@ -23,18 +24,57 @@ class TaskView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mediaHeight = MediaQuery.of(context).size.height;
+    final FirestoreService db = FirestoreService();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Plans', style: headingStyle),
-        backgroundColor: task.taskColour,
+        backgroundColor: task.getTaskColour(),
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back,
             color: Colors.white,
           ),
           onPressed: () {
-            Navigator.pop(context);
+            if (headingController.text != "") {
+              task.setTaskHeading(headingController.text);
+              task.setTaskContents(bodyController.text);
+              db.addTask(task: task);
+              Navigator.pop(context);
+            } else if (headingController.text == "") {
+              showDialog(
+                context: context,
+                builder: (context) => PlansDialog(
+                  dialogHeading: "Enter a Heading to Save",
+                  dialogContent: const Text(
+                    "If you would like to save the task, please enter a "
+                    "heading.",
+                    style: bodyStyle,
+                  ),
+                  dialogActions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        'Cancel',
+                        style: bodyStyle,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        'Exit Without Saving',
+                        style: bodyStyle,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
           },
         ),
         actions: [
@@ -48,33 +88,33 @@ class TaskView extends StatelessWidget {
                 context: context,
                 builder: (context) => PlansDialog(
                   dialogHeading: 'Pick a Colour',
-                  dialogContent: const Column(
+                  dialogContent: Column(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          PaletteColour(paletteColour: blue),
-                          PaletteColour(paletteColour: red),
-                          PaletteColour(paletteColour: green),
+                          PaletteColour(paletteColour: blue, task: task),
+                          PaletteColour(paletteColour: red, task: task),
+                          PaletteColour(paletteColour: green, task: task),
                         ],
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          PaletteColour(paletteColour: blueGrey),
-                          PaletteColour(paletteColour: yellow),
-                          PaletteColour(paletteColour: orange),
-                          PaletteColour(paletteColour: colour)
+                          PaletteColour(paletteColour: blueGrey, task: task),
+                          PaletteColour(paletteColour: yellow, task: task),
+                          PaletteColour(paletteColour: orange, task: task),
+                          PaletteColour(paletteColour: colour, task: task)
                         ],
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          PaletteColour(paletteColour: brown),
-                          PaletteColour(paletteColour: pink),
-                          PaletteColour(paletteColour: black),
+                          PaletteColour(paletteColour: brown, task: task),
+                          PaletteColour(paletteColour: pink, task: task),
+                          PaletteColour(paletteColour: black, task: task),
                         ],
                       ),
                     ],

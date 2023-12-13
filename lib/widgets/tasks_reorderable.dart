@@ -20,7 +20,6 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
       taskHeading: "Task 1",
       taskContents: "This is the first task",
       taskTag: "Tag 1",
-      taskPriority: "High",
     ),
     Task(
       taskID: "1",
@@ -28,7 +27,6 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
       taskHeading: "Task 2",
       taskContents: "",
       taskTag: "Tag 2",
-      taskPriority: "Medium",
     ),
     Task(
       taskID: "2",
@@ -36,7 +34,6 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
       taskHeading: "Task 3",
       taskContents: "This is the third task",
       taskTag: "Tag 3",
-      taskPriority: "Low",
     ),
     Task(
       taskID: "3",
@@ -44,7 +41,6 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
       taskHeading: "Task 4",
       taskContents: "This is the fourth task",
       taskTag: "Tag 4",
-      taskPriority: "High",
     ),
     Task(
       taskID: "4",
@@ -52,7 +48,6 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
       taskHeading: "Task 5",
       taskContents: "This is the fifth task",
       taskTag: "Tag 5",
-      taskPriority: "Medium",
     ),
     Task(
       taskID: "5",
@@ -60,7 +55,6 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
       taskHeading: "Task 6",
       taskContents: "This is the sixth task",
       taskTag: "Tag 6",
-      taskPriority: "Low",
     ),
     Task(
       taskID: "6",
@@ -68,7 +62,6 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
       taskHeading: "Task 7",
       taskContents: "This is the seventh task",
       taskTag: "Tag 7",
-      taskPriority: "High",
     ),
     Task(
       taskID: "7",
@@ -76,7 +69,6 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
       taskHeading: "Task 8",
       taskContents: "This is the eighth task",
       taskTag: "Tag 8",
-      taskPriority: "Medium",
     ),
     Task(
       taskID: "8",
@@ -84,7 +76,6 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
       taskHeading: "Task 9",
       taskContents: "This is the ninth task",
       taskTag: "Tag 9",
-      taskPriority: "Medium",
     ),
     Task(
       taskID: "9",
@@ -92,7 +83,6 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
       taskHeading: "Task 10",
       taskContents: "This is the tenth task",
       taskTag: "Tag 10",
-      taskPriority: "High",
     ),
   ];
 
@@ -121,7 +111,6 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
                 taskHeading: task.taskHeading,
                 taskContents: task.taskContents,
                 taskTag: task.taskTag,
-                taskPriority: task.taskPriority,
                 taskID: task.taskID,
               );
               // if (task has subtasks) {
