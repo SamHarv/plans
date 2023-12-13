@@ -29,6 +29,7 @@ class Plans extends StatelessWidget {
         colorSchemeSeed: colour,
         fontFamily: 'Roboto',
       ),
+      // Always dark mode
       themeMode: ThemeMode.dark,
     );
   }

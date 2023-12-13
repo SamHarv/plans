@@ -24,6 +24,7 @@ final routerDelegate = BeamerDelegate(
           key: const ValueKey('task-view'),
           type: BeamPageType.fadeTransition,
           title: '$data.taskHeading',
+          // Carry task to RaskView
           child: TaskView(task: data as Task, taskID: data.taskID),
         );
       },
@@ -36,6 +37,14 @@ final routerDelegate = BeamerDelegate(
           child: SubtaskView(),
         );
       },
+      // '/profile': (context, state, data) {
+      //   return const BeamPage(
+      //     key: ValueKey('profile'),
+      //     type: BeamPageType.fadeTransition,
+      //     title: 'Profile - Plans',
+      //     child: Profile(),
+      //   );
+      // },
       // '/about': (context, state, data) {
       //   return const BeamPage(
       //     key: ValueKey('about'),

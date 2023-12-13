@@ -10,6 +10,7 @@ import '../widgets/dialog.dart';
 class TaskView extends StatelessWidget {
   final Task task;
   final String taskID;
+  // to be declared in build
   late final TextEditingController headingController =
       TextEditingController(text: task.taskHeading);
   late final TextEditingController bodyController =
@@ -37,11 +38,14 @@ class TaskView extends StatelessWidget {
           ),
           onPressed: () {
             if (headingController.text != "") {
+              // Set text field values to task values
               task.setTaskHeading(headingController.text);
               task.setTaskContents(bodyController.text);
+              // Add task to DB
               db.addTask(task: task);
               Navigator.pop(context);
             } else if (headingController.text == "") {
+              // Save before exit alert
               showDialog(
                 context: context,
                 builder: (context) => PlansDialog(
@@ -54,6 +58,7 @@ class TaskView extends StatelessWidget {
                   dialogActions: [
                     TextButton(
                       onPressed: () {
+                        // Stay on Task
                         Navigator.pop(context);
                       },
                       child: const Text(
@@ -63,6 +68,7 @@ class TaskView extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () {
+                        // Double pop back to home screen
                         Navigator.pop(context);
                         Navigator.pop(context);
                       },
@@ -78,6 +84,7 @@ class TaskView extends StatelessWidget {
           },
         ),
         actions: [
+          // Select colour
           IconButton(
             icon: const Icon(
               Icons.color_lens,
@@ -131,6 +138,8 @@ class TaskView extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () {
+                        // Save selected colour to task
+                        // task.setTaskColour(selectedColour);
                         Navigator.pop(context);
                       },
                       child: const Text(
@@ -143,6 +152,7 @@ class TaskView extends StatelessWidget {
               );
             },
           ),
+          // Add a tag to the task
           IconButton(
             icon: const Icon(
               Icons.sell,
@@ -150,6 +160,7 @@ class TaskView extends StatelessWidget {
             ),
             onPressed: () {},
           ),
+          // Delete the task
           IconButton(
             icon: const Icon(
               Icons.delete,
@@ -164,6 +175,7 @@ class TaskView extends StatelessWidget {
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
+            // Type heading
             Align(
                 alignment: Alignment.topLeft,
                 child: MyTextField(
@@ -175,6 +187,7 @@ class TaskView extends StatelessWidget {
                 )),
             const Divider(),
             SingleChildScrollView(
+              // Type body
               child: Align(
                 alignment: Alignment.topLeft,
                 child: MyTextField(

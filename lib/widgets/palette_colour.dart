@@ -27,38 +27,9 @@ class _PaletteColourState extends ConsumerState<PaletteColour> {
         // set colour
         // This is changing the border for all colours
 
-        //!task.isSelected;
-
-        // if (task.isSelected) {
-        //   task.isSelected = false;
-        // } else {
-        //   task.isSelected = true;
-        // }
-        //task.isSelected != task.isSelected;
-        // setState(() {
-        //   widget.task.isSelected = !widget.task.isSelected;
-        //   if (widget.task.isSelected) {
-        //     widget.task.taskColour = widget.paletteColour;
-        //   }
-        // });
-
-        // if (widget.task.getTaskColour() == widget.paletteColour) {
-        //   widget.task.setIsSelected(true);
-        // } else {
-        //   widget.task.setIsSelected(false);
-        // }
-
-        // widget.task.getIsSelected()
-        //     ? widget.task.setIsSelected(false)
-        //     : widget.task.setIsSelected(true);
-
         ref.watch(colourIsSelected)
             ? ref.read(colourIsSelected.notifier).state = false
             : ref.read(colourIsSelected.notifier).state = true;
-
-        // widget.task.isSelected = ref.watch(colourIsSelected);
-
-        // widget.task.taskColour = widget.paletteColour;
       },
       child: Padding(
         padding: const EdgeInsets.all(4),
@@ -69,6 +40,7 @@ class _PaletteColourState extends ConsumerState<PaletteColour> {
             shape: BoxShape.circle,
             color: widget.paletteColour,
             border: Border.all(
+              // Currently all colours have border together
               color: ref.watch(colourIsSelected)
                   ? Colors.white
                   : widget.paletteColour,

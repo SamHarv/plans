@@ -20,6 +20,7 @@ class HomePage extends StatelessWidget {
         ),
         backgroundColor: colour,
         actions: [
+          // Filter tasks
           IconButton(
             icon: const Icon(
               Icons.filter_alt,
@@ -30,6 +31,8 @@ class HomePage extends StatelessWidget {
                 context: context,
                 builder: (context) => PlansDialog(
                   dialogHeading: 'Filter Tasks',
+                  // Add UI and logic to filter by keyword in heading, content,
+                  // or tag
                   dialogContent: const Placeholder(),
                   dialogActions: [
                     TextButton(
@@ -43,6 +46,7 @@ class HomePage extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () {
+                        // Execute search filter
                         Navigator.pop(context);
                       },
                       child: const Text(
@@ -55,17 +59,22 @@ class HomePage extends StatelessWidget {
               );
             },
           ),
+          // Navigate to profile/ auth page
           IconButton(
             icon: const Icon(
               Icons.person,
               color: Colors.white,
             ),
-            onPressed: () {},
+            onPressed: () {
+              // Navigate to profile/ auth page when built
+              // Beamer.of(context).beamToNamed('/profile');
+            },
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
             child: InkWell(
               child: Image.asset(
+                // O2Tech logo => navigate home
                 'images/1.png',
                 fit: BoxFit.contain,
                 height: 24.0,
@@ -77,7 +86,7 @@ class HomePage extends StatelessWidget {
       ),
       body: const Padding(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: TasksReorderable(),
+        child: TasksReorderable(), // build reorderable list of tasks
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.white,
@@ -85,7 +94,7 @@ class HomePage extends StatelessWidget {
           // Create blank new task
           final newTask = Task(
             taskColour: colour,
-            taskID: '0000',
+            taskID: '0000', // this will change when saved to database
           );
           // Navigate to blank task view
           Beamer.of(context).beamToNamed('/task-view', data: newTask);

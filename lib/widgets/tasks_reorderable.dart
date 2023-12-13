@@ -13,6 +13,7 @@ class TasksReorderable extends ConsumerStatefulWidget {
 }
 
 class _TasksReorderableState extends ConsumerState<TasksReorderable> {
+  // Dummy data until DB is up and running
   final tasks = [
     Task(
       taskID: "0",
@@ -88,6 +89,7 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
 
   @override
   Widget build(BuildContext context) {
+    // Update order of tasks when dragged
     void updateOrder(int oldIndex, int newIndex) {
       setState(() {
         if (newIndex > oldIndex) {
@@ -106,6 +108,7 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
           InkResponse(
             key: ValueKey(task),
             onTap: () {
+              // create task to navigate to based off selected task
               final destinationTask = Task(
                 taskColour: task.taskColour,
                 taskHeading: task.taskHeading,
@@ -133,6 +136,7 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
                     color: task.taskColour,
                     borderRadius: BorderRadius.circular(64),
                     border: Border.all(
+                      // Have border if taskColour matches background colour
                       color:
                           task.taskColour == colour ? Colors.blueGrey : colour,
                       width: 1,

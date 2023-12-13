@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../constants.dart';
 
 class PlansDialog extends ConsumerWidget {
+  // Custom dialog
   final String dialogHeading;
   final Widget? dialogContent;
   final List<Widget> dialogActions;
