@@ -41,8 +41,9 @@ class TaskView extends StatelessWidget {
               // Set text field values to task values
               task.setTaskHeading(headingController.text);
               task.setTaskContents(bodyController.text);
-              // Add task to DB
-              db.addTask(task: task);
+              // Update to Firestore
+              db.updateTask(task.taskID, task);
+
               Navigator.pop(context);
             } else if (headingController.text == "") {
               // Save before exit alert
@@ -69,6 +70,8 @@ class TaskView extends StatelessWidget {
                     TextButton(
                       onPressed: () {
                         // Double pop back to home screen
+                        // DELETE TASK
+                        db.deleteTask(task.taskID);
                         Navigator.pop(context);
                         Navigator.pop(context);
                       },
@@ -166,7 +169,44 @@ class TaskView extends StatelessWidget {
               Icons.delete,
               color: Colors.white,
             ),
-            onPressed: () {},
+            onPressed: () {
+              // show dialog to ask if sure to delete
+              showDialog(
+                context: context,
+                builder: (context) => PlansDialog(
+                  dialogHeading: "Delete Task",
+                  dialogContent: const Text(
+                    "Are you sure you want to delete this task?",
+                    style: bodyStyle,
+                  ),
+                  dialogActions: [
+                    TextButton(
+                      onPressed: () {
+                        // Stay on Task
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        'Cancel',
+                        style: bodyStyle,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        // Double pop back to home screen
+                        // DELETE TASK
+                        db.deleteTask(task.taskID);
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        'Delete',
+                        style: bodyStyle,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
         ],
       ),

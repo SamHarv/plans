@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:plans/constants.dart';
 
@@ -19,9 +17,6 @@ class Task {
   });
 
   // generate random task ID betweem 0 and 999999
-  String generateTaskID() {
-    return Random().nextInt(999999).toString();
-  }
 
   Color getTaskColour() {
     return taskColour;

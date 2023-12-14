@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:plans/services/firestore.dart';
 import 'package:plans/widgets/dialog.dart';
 import 'package:plans/widgets/tasks_reorderable.dart';
 
@@ -9,8 +12,13 @@ import '../models/task.dart';
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
+  String generateTaskID() {
+    return Random().nextInt(999999).toString();
+  }
+
   @override
   Widget build(BuildContext context) {
+    FirestoreService db = FirestoreService();
     return Scaffold(
       backgroundColor: colour,
       appBar: AppBar(
@@ -94,8 +102,9 @@ class HomePage extends StatelessWidget {
           // Create blank new task
           final newTask = Task(
             taskColour: colour,
-            taskID: '0000', // this will change when saved to database
+            taskID: generateTaskID(), // this will change when saved to database
           );
+          db.addTask(task: newTask);
           // Navigate to blank task view
           Beamer.of(context).beamToNamed('/task-view', data: newTask);
         },

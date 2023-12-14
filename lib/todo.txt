@@ -1,5 +1,10 @@
-- Implement Firestore CRUD
+- Implement Firestore delete
 - Implement delete button and swipe to delete
+- Fix reordering
+
+- Check whether ID already exists when generating new one
+
+- Fix white square when reordering - match the shape of the task
 
 - Create themed alert dialog widget
 - Implement alert dialog for filter, colour palette, tag, and delete icons
