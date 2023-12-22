@@ -88,6 +88,12 @@ class FirestoreService {
     });
   }
 
+  Future<void> updateTimeStamp(String taskID) async {
+    await tasks.doc(taskID).update({
+      'timestamp': Timestamp.now(),
+    });
+  }
+
   // delete
   Future<void> deleteTask(String taskID) async {
     await tasks.doc(taskID).delete();

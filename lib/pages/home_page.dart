@@ -127,6 +127,7 @@ class HomePage extends ConsumerWidget {
             taskID: generateTaskID(), // this will change when saved to database
           );
           db.addTask(task: newTask);
+
           // Navigate to blank task view
           Beamer.of(context).beamToNamed('/task-view', data: newTask);
         },

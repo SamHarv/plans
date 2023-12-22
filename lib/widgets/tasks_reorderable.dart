@@ -41,17 +41,22 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
   }
 
   Future<void> updateOrder(int oldIndex, int newIndex) async {
-    // Need to update to Firestore as well
-    // STILL NOT WORKING
+    setState(() {
+      if (oldIndex < newIndex) {
+        newIndex -= 1;
+      }
+      final Task task = tasks.removeAt(oldIndex);
+      tasks.insert(newIndex, task);
+      tasks = tasks.reversed.toList();
+    });
 
-    if (newIndex > oldIndex) {
-      newIndex--;
+    final batch = FirebaseFirestore.instance.batch();
+
+    for (Task task in tasks) {
+      batch.update(db.tasks.doc(task.taskID), {'timestamp': Timestamp.now()});
     }
-    final Task task = tasks.removeAt(oldIndex);
-    tasks.insert(newIndex, task);
-    db.updateTask(task.taskID, task);
 
-    setState(() {});
+    await batch.commit();
   }
 
   @override
