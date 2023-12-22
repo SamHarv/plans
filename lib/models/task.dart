@@ -16,8 +16,6 @@ class Task {
     this.taskTag = "",
   });
 
-  // generate random task ID betweem 0 and 999999
-
   Color getTaskColour() {
     return taskColour;
   }

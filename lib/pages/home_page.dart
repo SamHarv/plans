@@ -2,23 +2,45 @@ import 'dart:math';
 
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:plans/services/firestore.dart';
-import 'package:plans/widgets/dialog.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:plans/state_management/riverpod_providers.dart';
+// import 'package:plans/widgets/dialog.dart';
 import 'package:plans/widgets/tasks_reorderable.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../constants.dart';
 import '../models/task.dart';
 
-class HomePage extends StatelessWidget {
+final Uri _url = Uri.parse('https://oxygentech.com.au');
+
+Future<void> _launchUrl() async {
+  if (!await launchUrl(_url)) {
+    throw 'Could not launch $_url';
+  }
+}
+
+class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
-  String generateTaskID() {
-    return Random().nextInt(999999).toString();
-  }
-
   @override
-  Widget build(BuildContext context) {
-    FirestoreService db = FirestoreService();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final db = ref.read(database);
+    String generateTaskID() {
+      var generatedID = Random().nextInt(999999).toString();
+      // check if generatedID is in db already
+      db.getTasks().listen((snapshot) {
+        if (snapshot.docs.isNotEmpty) {
+          snapshot.docs.forEach((doc) {
+            if (doc['taskID'] == generatedID) {
+              // if generatedID is in db, generate new ID
+              generateTaskID();
+            }
+          });
+        }
+      });
+      return generatedID;
+    }
+
     return Scaffold(
       backgroundColor: colour,
       appBar: AppBar(
@@ -29,44 +51,44 @@ class HomePage extends StatelessWidget {
         backgroundColor: colour,
         actions: [
           // Filter tasks
-          IconButton(
-            icon: const Icon(
-              Icons.filter_alt,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => PlansDialog(
-                  dialogHeading: 'Filter Tasks',
-                  // Add UI and logic to filter by keyword in heading, content,
-                  // or tag
-                  dialogContent: const Placeholder(),
-                  dialogActions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text(
-                        'Cancel',
-                        style: bodyStyle,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        // Execute search filter
-                        Navigator.pop(context);
-                      },
-                      child: const Text(
-                        'Filter',
-                        style: bodyStyle,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
+          // IconButton(
+          //   icon: const Icon(
+          //     Icons.filter_alt,
+          //     color: Colors.white,
+          //   ),
+          //   onPressed: () {
+          //     showDialog(
+          //       context: context,
+          //       builder: (context) => PlansDialog(
+          //         dialogHeading: 'Filter Tasks',
+          //         // Add UI and logic to filter by keyword in heading, content,
+          //         // or tag
+          //         dialogContent: const Placeholder(),
+          //         dialogActions: [
+          //           TextButton(
+          //             onPressed: () {
+          //               Navigator.pop(context);
+          //             },
+          //             child: const Text(
+          //               'Cancel',
+          //               style: bodyStyle,
+          //             ),
+          //           ),
+          //           TextButton(
+          //             onPressed: () {
+          //               // Execute search filter
+          //               Navigator.pop(context);
+          //             },
+          //             child: const Text(
+          //               'Filter',
+          //               style: bodyStyle,
+          //             ),
+          //           ),
+          //         ],
+          //       ),
+          //     );
+          //   },
+          // ),
           // Navigate to profile/ auth page
           IconButton(
             icon: const Icon(
@@ -87,7 +109,7 @@ class HomePage extends StatelessWidget {
                 fit: BoxFit.contain,
                 height: 24.0,
               ),
-              onTap: () => Beamer.of(context).beamToNamed('/'),
+              onTap: () => _launchUrl(),
             ),
           ),
         ],

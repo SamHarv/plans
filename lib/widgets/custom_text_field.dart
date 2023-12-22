@@ -24,6 +24,7 @@ class MyTextField extends StatelessWidget {
       height: height,
       width: double.infinity,
       child: TextField(
+        textCapitalization: TextCapitalization.sentences,
         maxLines: maxLines, // multi line
         controller: controller,
         style: style,

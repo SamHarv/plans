@@ -88,19 +88,6 @@ class FirestoreService {
     });
   }
 
-  // Update order of tasks in Firestore
-  Future<void> updateTasksOrder(List<Task> updatedTasks) async {
-    final batch = FirebaseFirestore.instance.batch();
-
-    for (var i = 0; i < updatedTasks.length; i++) {
-      final task = updatedTasks[i];
-      final taskDoc = tasks.doc(task.taskID);
-      batch.update(taskDoc, {'order': i});
-    }
-
-    await batch.commit();
-  }
-
   // delete
   Future<void> deleteTask(String taskID) async {
     await tasks.doc(taskID).delete();

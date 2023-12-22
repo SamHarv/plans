@@ -22,14 +22,19 @@ class PaletteColour extends ConsumerStatefulWidget {
 class _PaletteColourState extends ConsumerState<PaletteColour> {
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    final db = ref.read(database);
+
+    return InkWell(
+      // make splash circular
+      borderRadius: BorderRadius.circular(50),
       onTap: () {
         // set colour
-        // This is changing the border for all colours
 
-        ref.watch(colourIsSelected)
-            ? ref.read(colourIsSelected.notifier).state = false
-            : ref.read(colourIsSelected.notifier).state = true;
+        // update the state on tap
+        db.updateTask(widget.task.taskID, widget.task);
+        setState(() {
+          widget.task.setTaskColour(widget.paletteColour);
+        });
       },
       child: Padding(
         padding: const EdgeInsets.all(4),
@@ -39,13 +44,13 @@ class _PaletteColourState extends ConsumerState<PaletteColour> {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: widget.paletteColour,
-            border: Border.all(
-              // Currently all colours have border together
-              color: ref.watch(colourIsSelected)
-                  ? Colors.white
-                  : widget.paletteColour,
-              width: 1,
-            ),
+            // border: Border.all(
+            //   // display colour based on db status
+            //   color: widget.task.getTaskColour() == widget.paletteColour
+            //       ? Colors.white
+            //       : widget.paletteColour,
+            //   width: 1,
+            // ),
           ),
         ),
       ),

@@ -47,10 +47,9 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
     if (newIndex > oldIndex) {
       newIndex--;
     }
-    await db.updateTasksOrder(tasks);
-    // final Task task = tasks.removeAt(oldIndex);
-    // tasks.insert(newIndex, task);
-    //db.updateTask(task.taskID, task);
+    final Task task = tasks.removeAt(oldIndex);
+    tasks.insert(newIndex, task);
+    db.updateTask(task.taskID, task);
 
     setState(() {});
   }
@@ -75,6 +74,7 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
 
           final tasks = tasksFromSnapshot.map((task) {
             return InkResponse(
+              borderRadius: BorderRadius.circular(64),
               key: ValueKey(task.taskID), // issue here
               onTap: () {
                 // create task to navigate to based off selected task
@@ -125,6 +125,13 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
             );
           }).toList();
           return ReorderableListView(
+            proxyDecorator: (child, index, animation) => Material(
+              borderRadius: BorderRadius.circular(64),
+              child: child,
+            ),
+            // make task edges rounded when moving
+            clipBehavior: Clip.none,
+
             onReorder: (oldIndex, newIndex) async {
               await updateOrder(oldIndex, newIndex);
             },

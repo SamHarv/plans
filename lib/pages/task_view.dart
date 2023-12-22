@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:plans/state_management/riverpod_providers.dart';
 import 'package:plans/widgets/palette_colour.dart';
 
 import '../constants.dart';
 import '../models/task.dart';
-import '../services/firestore.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/dialog.dart';
 
-class TaskView extends StatelessWidget {
+class TaskView extends ConsumerStatefulWidget {
   final Task task;
   final String taskID;
   // to be declared in build
@@ -23,29 +24,34 @@ class TaskView extends StatelessWidget {
   });
 
   @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _TaskViewState();
+}
+
+class _TaskViewState extends ConsumerState<TaskView> {
+  @override
   Widget build(BuildContext context) {
+    final db = ref.read(database);
     final mediaHeight = MediaQuery.of(context).size.height;
-    final FirestoreService db = FirestoreService();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Plans', style: headingStyle),
-        backgroundColor: task.getTaskColour(),
+        backgroundColor: widget.task.getTaskColour(),
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back,
             color: Colors.white,
           ),
           onPressed: () {
-            if (headingController.text != "") {
+            if (widget.headingController.text != "") {
               // Set text field values to task values
-              task.setTaskHeading(headingController.text);
-              task.setTaskContents(bodyController.text);
+              widget.task.setTaskHeading(widget.headingController.text);
+              widget.task.setTaskContents(widget.bodyController.text);
               // Update to Firestore
-              db.updateTask(task.taskID, task);
+              db.updateTask(widget.task.taskID, widget.task);
 
               Navigator.pop(context);
-            } else if (headingController.text == "") {
+            } else if (widget.headingController.text == "") {
               // Save before exit alert
               showDialog(
                 context: context,
@@ -71,7 +77,7 @@ class TaskView extends StatelessWidget {
                       onPressed: () {
                         // Double pop back to home screen
                         // DELETE TASK
-                        db.deleteTask(task.taskID);
+                        db.deleteTask(widget.task.taskID);
                         Navigator.pop(context);
                         Navigator.pop(context);
                       },
@@ -98,36 +104,51 @@ class TaskView extends StatelessWidget {
                 context: context,
                 builder: (context) => PlansDialog(
                   dialogHeading: 'Pick a Colour',
-                  dialogContent: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          PaletteColour(paletteColour: blue, task: task),
-                          PaletteColour(paletteColour: red, task: task),
-                          PaletteColour(paletteColour: green, task: task),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          PaletteColour(paletteColour: blueGrey, task: task),
-                          PaletteColour(paletteColour: yellow, task: task),
-                          PaletteColour(paletteColour: orange, task: task),
-                          PaletteColour(paletteColour: colour, task: task)
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          PaletteColour(paletteColour: brown, task: task),
-                          PaletteColour(paletteColour: pink, task: task),
-                          PaletteColour(paletteColour: black, task: task),
-                        ],
-                      ),
-                    ],
+                  dialogContent: GestureDetector(
+                    onTapCancel: () {
+                      setState(() {});
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            PaletteColour(
+                                paletteColour: blue, task: widget.task),
+                            PaletteColour(
+                                paletteColour: red, task: widget.task),
+                            PaletteColour(
+                                paletteColour: green, task: widget.task),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            PaletteColour(
+                                paletteColour: blueGrey, task: widget.task),
+                            PaletteColour(
+                                paletteColour: yellow, task: widget.task),
+                            PaletteColour(
+                                paletteColour: orange, task: widget.task),
+                            PaletteColour(
+                                paletteColour: colour, task: widget.task)
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            PaletteColour(
+                                paletteColour: brown, task: widget.task),
+                            PaletteColour(
+                                paletteColour: pink, task: widget.task),
+                            PaletteColour(
+                                paletteColour: black, task: widget.task),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                   dialogActions: [
                     TextButton(
@@ -143,6 +164,8 @@ class TaskView extends StatelessWidget {
                       onPressed: () {
                         // Save selected colour to task
                         // task.setTaskColour(selectedColour);
+                        db.updateTask(widget.taskID, widget.task);
+                        setState(() {});
                         Navigator.pop(context);
                       },
                       child: const Text(
@@ -156,13 +179,13 @@ class TaskView extends StatelessWidget {
             },
           ),
           // Add a tag to the task
-          IconButton(
-            icon: const Icon(
-              Icons.sell,
-              color: Colors.white,
-            ),
-            onPressed: () {},
-          ),
+          // IconButton(
+          //   icon: const Icon(
+          //     Icons.sell,
+          //     color: Colors.white,
+          //   ),
+          //   onPressed: () {},
+          // ),
           // Delete the task
           IconButton(
             icon: const Icon(
@@ -194,7 +217,7 @@ class TaskView extends StatelessWidget {
                       onPressed: () {
                         // Double pop back to home screen
                         // DELETE TASK
-                        db.deleteTask(task.taskID);
+                        db.deleteTask(widget.task.taskID);
                         Navigator.pop(context);
                         Navigator.pop(context);
                       },
@@ -210,33 +233,35 @@ class TaskView extends StatelessWidget {
           ),
         ],
       ),
-      backgroundColor: task.taskColour,
+      backgroundColor: widget.task.taskColour,
       body: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
         child: Column(
           children: [
             // Type heading
+            const SizedBox(height: 16),
             Align(
                 alignment: Alignment.topLeft,
                 child: MyTextField(
-                  controller: headingController,
+                  controller: widget.headingController,
                   hintText: "Click here to add heading",
                   maxLines: 1,
                   fontSize: 24,
                   style: headingStyle,
                 )),
             const Divider(),
-            SingleChildScrollView(
-              // Type body
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: MyTextField(
-                  controller: bodyController,
-                  hintText: "Click here to add notes",
-                  maxLines: null,
-                  fontSize: 18,
-                  style: bodyStyle,
-                  height: mediaHeight - 180,
+            Expanded(
+              child: SingleChildScrollView(
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: MyTextField(
+                    controller: widget.bodyController,
+                    hintText: "Click here to add notes",
+                    maxLines: null,
+                    fontSize: 18,
+                    style: bodyStyle,
+                    height: mediaHeight - 140,
+                  ),
                 ),
               ),
             ),

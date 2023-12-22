@@ -1,18 +1,3 @@
-- Implement Firestore delete
-- Implement delete button and swipe to delete
 - Fix reordering
 
-- Check whether ID already exists when generating new one
-
-- Fix white square when reordering - match the shape of the task
-
-- Create themed alert dialog widget
-- Implement alert dialog for filter, colour palette, tag, and delete icons
-- Implement URL launcher for O2Tech logo
 - Implement auth page to be navigated to via profile icon
-
-- Work out how to implement subtasks
-
-- Implement colour palette 
-- Implement tag to add tag to tasks
-- Implement filter to filter tasks by tags, title or content

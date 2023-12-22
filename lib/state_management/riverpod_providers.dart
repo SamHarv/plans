@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:plans/services/firestore.dart';
 import 'package:riverpod/riverpod.dart';
 
 import '../models/task.dart';
@@ -6,3 +8,7 @@ import '../models/task.dart';
 final tasksProvider = StateProvider<List<Task>>((ref) => []);
 
 final colourIsSelected = StateProvider<bool>((ref) => false);
+final selectedColourProvider = StateProvider<Color>((ref) => Colors.black);
+
+// TRY TO IMPLEMENT THIS
+final database = StateProvider((ref) => FirestoreService());
