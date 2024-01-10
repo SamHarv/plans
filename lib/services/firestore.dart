@@ -24,6 +24,7 @@ class FirestoreService {
   // read
   Stream<QuerySnapshot> getTasks() {
     return tasks.orderBy('timestamp', descending: true).snapshots();
+    // return tasks.orderBy('order', descending: false).snapshots();
   }
 
   // get single task by taskID
@@ -96,6 +97,7 @@ class FirestoreService {
 
   // delete
   Future<void> deleteTask(String taskID) async {
+    // get index of task, then update all tasks with higher index to -1
     await tasks.doc(taskID).delete();
   }
 }

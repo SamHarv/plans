@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:plans/constants.dart';
 import 'package:plans/services/firestore.dart';
+import 'package:plans/state_management/riverpod_providers.dart';
 import '../models/task.dart';
 
 class TasksReorderable extends ConsumerStatefulWidget {
@@ -15,14 +16,18 @@ class TasksReorderable extends ConsumerStatefulWidget {
 }
 
 class _TasksReorderableState extends ConsumerState<TasksReorderable> {
-  FirestoreService db = FirestoreService();
+  late FirestoreService db;
   late List<Task> tasks;
+  // late Future<List<Task>> tasks;
 
   @override
   void initState() {
     super.initState();
-    tasks = [];
+
     // Load tasks from Firestore and update the state
+    db = ref.read(database);
+    tasks = ref.read(tasksProvider);
+
     db.getTasks().listen((snapshot) {
       if (snapshot.docs.isNotEmpty) {
         setState(() {
@@ -41,21 +46,15 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
   }
 
   Future<void> updateOrder(int oldIndex, int newIndex) async {
-    setState(() {
-      if (oldIndex < newIndex) {
-        newIndex -= 1;
-      }
-      final Task task = tasks.removeAt(oldIndex);
-      tasks.insert(newIndex, task);
-      tasks = tasks.reversed.toList();
-    });
-
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+    tasks.insert(newIndex, tasks.removeAt(oldIndex));
+    tasks = tasks.reversed.toList();
     final batch = FirebaseFirestore.instance.batch();
-
     for (Task task in tasks) {
       batch.update(db.tasks.doc(task.taskID), {'timestamp': Timestamp.now()});
     }
-
     await batch.commit();
   }
 
@@ -119,9 +118,17 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
                       ),
                     ),
                     child: Center(
-                      child: Text(
-                        task.taskHeading,
-                        style: headingStyle,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 0,
+                        ),
+                        child: Text(
+                          task.taskHeading,
+                          style: headingStyle,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
                       ),
                     ),
                   ),
@@ -130,12 +137,11 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
             );
           }).toList();
           return ReorderableListView(
+            // make task edges rounded when moving
             proxyDecorator: (child, index, animation) => Material(
               borderRadius: BorderRadius.circular(64),
               child: child,
             ),
-            // make task edges rounded when moving
-            clipBehavior: Clip.none,
 
             onReorder: (oldIndex, newIndex) async {
               await updateOrder(oldIndex, newIndex);

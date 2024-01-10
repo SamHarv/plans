@@ -8,6 +8,8 @@ class MyTextField extends StatelessWidget {
     required this.maxLines,
     required this.fontSize,
     required this.style,
+    required this.onUpdate,
+    required this.undoController,
     this.height,
   }) : super(key: key);
 
@@ -17,6 +19,8 @@ class MyTextField extends StatelessWidget {
   final int? maxLines;
   final double fontSize;
   final TextStyle style;
+  final Function(String) onUpdate;
+  final UndoHistoryController undoController;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +28,8 @@ class MyTextField extends StatelessWidget {
       height: height,
       width: double.infinity,
       child: TextField(
+        undoController: undoController,
+        onChanged: onUpdate,
         textCapitalization: TextCapitalization.sentences,
         maxLines: maxLines, // multi line
         controller: controller,

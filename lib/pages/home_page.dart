@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
+// import 'package:plans/services/firestore.dart';
 import 'package:plans/state_management/riverpod_providers.dart';
 // import 'package:plans/widgets/dialog.dart';
 import 'package:plans/widgets/tasks_reorderable.dart';
@@ -28,14 +30,24 @@ class HomePage extends ConsumerWidget {
     String generateTaskID() {
       var generatedID = Random().nextInt(999999).toString();
       // check if generatedID is in db already
+      // Future<List<Task>> taskList = db.getTasks();
+      // taskList.then((value) {
+      //   for (var task in value) {
+      //     if (task.taskID == generatedID) {
+      //       // if generatedID is in db, generate new ID
+      //       generateTaskID();
+      //     }
+      //   }
+      // });
+
       db.getTasks().listen((snapshot) {
         if (snapshot.docs.isNotEmpty) {
-          snapshot.docs.forEach((doc) {
+          for (var doc in snapshot.docs) {
             if (doc['taskID'] == generatedID) {
               // if generatedID is in db, generate new ID
               generateTaskID();
             }
-          });
+          }
         }
       });
       return generatedID;
@@ -44,9 +56,15 @@ class HomePage extends ConsumerWidget {
     return Scaffold(
       backgroundColor: colour,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Plans',
-          style: headingStyle,
+          style: GoogleFonts.caveat(
+            textStyle: const TextStyle(
+              color: Colors.white,
+              fontSize: 40,
+              fontFamily: 'Caveat',
+            ),
+          ),
         ),
         backgroundColor: colour,
         actions: [
@@ -126,6 +144,27 @@ class HomePage extends ConsumerWidget {
             taskColour: colour,
             taskID: generateTaskID(), // this will change when saved to database
           );
+          // FirestoreService firestore = FirestoreService();
+          //update all other tasks to be one order higher
+          // db.getTasks().listen((snapshot) {
+          //   if (snapshot.docs.isNotEmpty) {
+          //     for (var doc in snapshot.docs) {
+          //       final task = Task(
+          //         taskID: doc['taskID'],
+          //         taskColour: firestore.colorFromString(doc['taskColour']),
+          //         taskHeading: doc['taskHeading'],
+          //         taskContents: doc['taskContents'],
+          //         taskTag: doc['taskTag'],
+          //         // order: doc['order'],
+          //       );
+          //       // update order
+          //       task.setOrder(task.getOrder() + 1);
+          //       // update db
+          //       db.updateTask(task.taskID, task);
+          //     }
+          //   }
+          // });
+
           db.addTask(task: newTask);
 
           // Navigate to blank task view
