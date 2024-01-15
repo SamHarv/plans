@@ -1,3 +1,4 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -75,7 +76,9 @@ class _TaskViewState extends ConsumerState<TaskView> {
                 // Update to Firestore
                 db.updateTask(widget.task.taskID, widget.task);
 
-                Navigator.pop(context);
+                // Navigator.pop(context);
+                Beamer.of(context).beamToNamed('/home');
+                // Beamer.of(context).beamBack();
               } else if (widget.headingController.text == "") {
                 // Save before exit alert
                 showDialog(
@@ -103,8 +106,9 @@ class _TaskViewState extends ConsumerState<TaskView> {
                           // Double pop back to home screen
                           // DELETE TASK
                           db.deleteTask(widget.task.taskID);
-                          Navigator.pop(context);
-                          Navigator.pop(context);
+                          // Beamer.of(context).beamBack();
+                          // Navigator.pop(context);
+                          Beamer.of(context).beamToNamed('/home');
                         },
                         child: const Text(
                           'Exit Without Saving',
@@ -150,9 +154,9 @@ class _TaskViewState extends ConsumerState<TaskView> {
                   builder: (context) => PlansDialog(
                     dialogHeading: 'Pick a Colour',
                     dialogContent: GestureDetector(
-                      onTapCancel: () {
-                        setState(() {});
-                      },
+                      // onTapCancel: () {
+                      //   setState(() {});
+                      // },
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -264,7 +268,9 @@ class _TaskViewState extends ConsumerState<TaskView> {
                           // DELETE TASK
                           db.deleteTask(widget.task.taskID);
                           Navigator.pop(context);
-                          Navigator.pop(context);
+                          // Navigator.pop(context);
+                          Beamer.of(context).beamToNamed('/home');
+                          // Beamer.of(context).beamBack();
                         },
                         child: const Text(
                           'Delete',
@@ -288,6 +294,8 @@ class _TaskViewState extends ConsumerState<TaskView> {
               Align(
                   alignment: Alignment.topLeft,
                   child: MyTextField(
+                    // implement bullet point functionality
+
                     undoController: widget.headingUndoController,
                     onUpdate: (text) {
                       widget.task.setTaskHeading(text);

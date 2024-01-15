@@ -11,3 +11,6 @@ final colourIsSelected = StateProvider<bool>((ref) => false);
 final selectedColourProvider = StateProvider<Color>((ref) => Colors.black);
 
 final database = StateProvider((ref) => FirestoreService());
+
+// final loggedIn = StateProvider<bool>((ref) => false);
+final registered = StateProvider<bool>((ref) => true);

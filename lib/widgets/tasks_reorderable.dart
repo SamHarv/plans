@@ -30,17 +30,17 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
 
     db.getTasks().listen((snapshot) {
       if (snapshot.docs.isNotEmpty) {
-        setState(() {
-          tasks = snapshot.docs.map((doc) {
-            return Task(
-              taskID: doc['taskID'],
-              taskColour: db.colorFromString(doc['taskColour']),
-              taskHeading: doc['taskHeading'],
-              taskContents: doc['taskContents'],
-              taskTag: doc['taskTag'],
-            );
-          }).toList();
-        });
+        // setState(() {
+        tasks = snapshot.docs.map((doc) {
+          return Task(
+            taskID: doc['taskID'],
+            taskColour: db.colorFromString(doc['taskColour']),
+            taskHeading: doc['taskHeading'],
+            taskContents: doc['taskContents'],
+            taskTag: doc['taskTag'],
+          );
+        }).toList();
+        // });
       }
     });
   }

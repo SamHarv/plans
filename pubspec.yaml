@@ -44,6 +44,8 @@ dependencies:
   flutter_native_splash: ^2.3.8
   flutter_launcher_icons: ^0.13.1
   google_fonts: ^6.1.0
+  firebase_auth: ^4.16.0
+  email_validator: ^2.1.17
 
 flutter_native_splash:
   color: "#374854"

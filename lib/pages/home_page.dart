@@ -1,12 +1,12 @@
 import 'dart:math';
 
 import 'package:beamer/beamer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-// import 'package:plans/services/firestore.dart';
+
 import 'package:plans/state_management/riverpod_providers.dart';
-// import 'package:plans/widgets/dialog.dart';
 import 'package:plans/widgets/tasks_reorderable.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -21,24 +21,31 @@ Future<void> _launchUrl() async {
   }
 }
 
-class HomePage extends ConsumerWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => _HomePageState();
+}
+
+class _HomePageState extends ConsumerState<HomePage> {
+  bool isRegistered = true;
+
+  @override
+  void initState() {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        Beamer.of(context).beamToNamed('/profile');
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final db = ref.read(database);
     String generateTaskID() {
       var generatedID = Random().nextInt(999999).toString();
-      // check if generatedID is in db already
-      // Future<List<Task>> taskList = db.getTasks();
-      // taskList.then((value) {
-      //   for (var task in value) {
-      //     if (task.taskID == generatedID) {
-      //       // if generatedID is in db, generate new ID
-      //       generateTaskID();
-      //     }
-      //   }
-      // });
 
       db.getTasks().listen((snapshot) {
         if (snapshot.docs.isNotEmpty) {
@@ -66,47 +73,9 @@ class HomePage extends ConsumerWidget {
             ),
           ),
         ),
+        automaticallyImplyLeading: false,
         backgroundColor: colour,
         actions: [
-          // Filter tasks
-          // IconButton(
-          //   icon: const Icon(
-          //     Icons.filter_alt,
-          //     color: Colors.white,
-          //   ),
-          //   onPressed: () {
-          //     showDialog(
-          //       context: context,
-          //       builder: (context) => PlansDialog(
-          //         dialogHeading: 'Filter Tasks',
-          //         // Add UI and logic to filter by keyword in heading, content,
-          //         // or tag
-          //         dialogContent: const Placeholder(),
-          //         dialogActions: [
-          //           TextButton(
-          //             onPressed: () {
-          //               Navigator.pop(context);
-          //             },
-          //             child: const Text(
-          //               'Cancel',
-          //               style: bodyStyle,
-          //             ),
-          //           ),
-          //           TextButton(
-          //             onPressed: () {
-          //               // Execute search filter
-          //               Navigator.pop(context);
-          //             },
-          //             child: const Text(
-          //               'Filter',
-          //               style: bodyStyle,
-          //             ),
-          //           ),
-          //         ],
-          //       ),
-          //     );
-          //   },
-          // ),
           // Navigate to profile/ auth page
           IconButton(
             icon: const Icon(
@@ -114,15 +83,15 @@ class HomePage extends ConsumerWidget {
               color: Colors.white,
             ),
             onPressed: () {
-              // Navigate to profile/ auth page when built
-              // Beamer.of(context).beamToNamed('/profile');
+              // Navigate to profile/ auth page
+              Beamer.of(context).beamToNamed('/profile');
             },
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
             child: InkWell(
               child: Image.asset(
-                // O2Tech logo => navigate home
+                // O2Tech logo => navigate to webpage
                 'images/1.png',
                 fit: BoxFit.contain,
                 height: 24.0,
@@ -144,26 +113,6 @@ class HomePage extends ConsumerWidget {
             taskColour: colour,
             taskID: generateTaskID(), // this will change when saved to database
           );
-          // FirestoreService firestore = FirestoreService();
-          //update all other tasks to be one order higher
-          // db.getTasks().listen((snapshot) {
-          //   if (snapshot.docs.isNotEmpty) {
-          //     for (var doc in snapshot.docs) {
-          //       final task = Task(
-          //         taskID: doc['taskID'],
-          //         taskColour: firestore.colorFromString(doc['taskColour']),
-          //         taskHeading: doc['taskHeading'],
-          //         taskContents: doc['taskContents'],
-          //         taskTag: doc['taskTag'],
-          //         // order: doc['order'],
-          //       );
-          //       // update order
-          //       task.setOrder(task.getOrder() + 1);
-          //       // update db
-          //       db.updateTask(task.taskID, task);
-          //     }
-          //   }
-          // });
 
           db.addTask(task: newTask);
 

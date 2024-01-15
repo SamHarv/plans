@@ -1,17 +1,32 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../models/task.dart';
 import '../constants.dart';
 
 class FirestoreService {
-  // get collection of tasks
-  final CollectionReference tasks =
-      FirebaseFirestore.instance.collection('tasks');
+  // get collection of users
+  final CollectionReference users =
+      FirebaseFirestore.instance.collection('users');
+
+  // get the current user
+  // final user = FirebaseAuth.instance.currentUser;
+
+  // get collection of tasks for user
+  final CollectionReference tasks = FirebaseFirestore.instance
+      .collection('users')
+      .doc(FirebaseAuth.instance.currentUser?.uid)
+      .collection('tasks');
 
   // create
   Future<void> addTask({required Task task}) async {
-    await tasks.doc(task.taskID).set({
+    await users
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection('tasks')
+        .doc(task.taskID)
+        .set({
+      'userID': FirebaseAuth.instance.currentUser?.uid,
       'taskID': task.taskID,
       'taskColour': task.taskColour.toString(),
       'taskHeading': task.taskHeading,
@@ -19,17 +34,42 @@ class FirestoreService {
       'taskTag': task.taskTag,
       'timestamp': Timestamp.now(),
     });
+    // await tasks.doc(task.taskID).set({
+    //   'userID': user!.uid,
+    //   'taskID': task.taskID,
+    //   'taskColour': task.taskColour.toString(),
+    //   'taskHeading': task.taskHeading,
+    //   'taskContents': task.taskContents,
+    //   'taskTag': task.taskTag,
+    //   'timestamp': Timestamp.now(),
+    // });
+  }
+
+  // create user
+  Future<void> addUser({required String userID}) async {
+    await users.doc(userID).set({
+      'userID': userID,
+    });
   }
 
   // read
   Stream<QuerySnapshot> getTasks() {
-    return tasks.orderBy('timestamp', descending: true).snapshots();
+    return users
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection('tasks')
+        .orderBy('timestamp', descending: true)
+        .snapshots();
+    // return tasks.orderBy('timestamp', descending: true).snapshots();
     // return tasks.orderBy('order', descending: false).snapshots();
   }
 
   // get single task by taskID
   Future<Task> getTask(String taskID) async {
-    final task = await tasks.doc(taskID).get();
+    final task = await users
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection('tasks')
+        .doc(taskID)
+        .get();
     return Task(
       taskID: task['taskID'],
       taskColour: colorFromString(task['taskColour']),
@@ -37,6 +77,15 @@ class FirestoreService {
       taskContents: task['taskContents'],
       taskTag: task['taskTag'],
     );
+
+    // final task = await tasks.doc(taskID).get();
+    // return Task(
+    //   taskID: task['taskID'],
+    //   taskColour: colorFromString(task['taskColour']),
+    //   taskHeading: task['taskHeading'],
+    //   taskContents: task['taskContents'],
+    //   taskTag: task['taskTag'],
+    // );
   }
 
   // get colour from String
@@ -79,7 +128,11 @@ class FirestoreService {
 
   // update
   Future<void> updateTask(String taskID, Task newTask) async {
-    await tasks.doc(taskID).update({
+    await users
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection('tasks')
+        .doc(taskID)
+        .update({
       'taskID': taskID,
       'taskColour': newTask.taskColour.toString(),
       'taskHeading': newTask.taskHeading,
@@ -87,17 +140,39 @@ class FirestoreService {
       'taskTag': newTask.taskTag,
       'timestamp': Timestamp.now(),
     });
+
+    // await tasks.doc(taskID).update({
+    //   'taskID': taskID,
+    //   'taskColour': newTask.taskColour.toString(),
+    //   'taskHeading': newTask.taskHeading,
+    //   'taskContents': newTask.taskContents,
+    //   'taskTag': newTask.taskTag,
+    //   'timestamp': Timestamp.now(),
+    // });
   }
 
   Future<void> updateTimeStamp(String taskID) async {
-    await tasks.doc(taskID).update({
+    await users
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection('tasks')
+        .doc(taskID)
+        .update({
       'timestamp': Timestamp.now(),
     });
+    // await tasks.doc(taskID).update({
+    //   'timestamp': Timestamp.now(),
+    // });
   }
 
   // delete
   Future<void> deleteTask(String taskID) async {
+    await users
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection('tasks')
+        .doc(taskID)
+        .delete();
     // get index of task, then update all tasks with higher index to -1
-    await tasks.doc(taskID).delete();
+
+    // await tasks.doc(taskID).delete();
   }
 }

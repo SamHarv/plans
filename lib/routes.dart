@@ -1,19 +1,33 @@
 import 'package:beamer/beamer.dart';
+// import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:plans/models/task.dart';
+import 'package:plans/pages/sign_up_view.dart';
+// import 'package:plans/pages/check_auth.dart';
 
+import 'models/task.dart';
+// import 'pages/check_auth.dart';
+import 'pages/forgot_password.dart';
+import 'pages/profile_view.dart';
 import 'pages/home_page.dart';
 import 'pages/subtask_view.dart';
 import 'pages/task_view.dart';
 
 final routerDelegate = BeamerDelegate(
-  notFoundRedirectNamed: '/',
-  initialPath: '/',
+  notFoundRedirectNamed: '/home',
+  initialPath: '/home',
   locationBuilder: RoutesLocationBuilder(
     routes: {
-      '/': (context, state, data) {
+      // '/auth': (context, state, data) {
+      //   return const BeamPage(
+      //     key: ValueKey('auth'),
+      //     type: BeamPageType.fadeTransition,
+      //     title: 'Plans',
+      //     child: AuthenticationCheck(),
+      //   );
+      // },
+      '/home': (context, state, data) {
         return const BeamPage(
-          key: ValueKey(''),
+          key: ValueKey('home'),
           type: BeamPageType.fadeTransition,
           title: 'Plans',
           child: HomePage(),
@@ -37,14 +51,30 @@ final routerDelegate = BeamerDelegate(
           child: SubtaskView(),
         );
       },
-      // '/profile': (context, state, data) {
-      //   return const BeamPage(
-      //     key: ValueKey('profile'),
-      //     type: BeamPageType.fadeTransition,
-      //     title: 'Profile - Plans',
-      //     child: Profile(),
-      //   );
-      // },
+      '/profile': (context, state, data) {
+        return const BeamPage(
+          key: ValueKey('profile'),
+          type: BeamPageType.fadeTransition,
+          title: 'Profile - Plans',
+          child: ProfileView(),
+        );
+      },
+      '/sign-up': (context, state, data) {
+        return const BeamPage(
+          key: ValueKey('sign-up'),
+          type: BeamPageType.fadeTransition,
+          title: 'Sign Up - Plans',
+          child: SignUpView(),
+        );
+      },
+      '/forgot-password': (context, state, data) {
+        return const BeamPage(
+          key: ValueKey('forgot-password'),
+          type: BeamPageType.fadeTransition,
+          title: 'Forgot Password - Plans',
+          child: ForgotPassword(),
+        );
+      },
       // '/about': (context, state, data) {
       //   return const BeamPage(
       //     key: ValueKey('about'),
@@ -67,17 +97,6 @@ final routerDelegate = BeamerDelegate(
       //     type: BeamPageType.fadeTransition,
       //     title: 'Settings - HF App',
       //     child: Settings(),
-      //   );
-      // },
-
-      // '/article/:id': (context, state, data) {
-      //   final postId = state.pathParameters['id'];
-      //   final post = postData.firstWhere((post) => post.id == postId);
-      //   return BeamPage(
-      //     key: ValueKey('article-$postId'),
-      //     type: BeamPageType.fadeTransition,
-      //     title: post.title,
-      //     child: ArticlePage(post: post, id: postId!),
       //   );
       // },
     },
