@@ -33,10 +33,10 @@ class TaskView extends ConsumerStatefulWidget {
 }
 
 class _TaskViewState extends ConsumerState<TaskView> {
+  bool checklist = false;
   @override
   Widget build(BuildContext context) {
     final db = ref.read(database);
-    // final mediaHeight = MediaQuery.of(context).size.height;
 
     return PopScope(
       canPop: true,
@@ -294,8 +294,6 @@ class _TaskViewState extends ConsumerState<TaskView> {
               Align(
                   alignment: Alignment.topLeft,
                   child: MyTextField(
-                    // implement bullet point functionality
-
                     undoController: widget.headingUndoController,
                     onUpdate: (text) {
                       widget.task.setTaskHeading(text);
@@ -315,6 +313,25 @@ class _TaskViewState extends ConsumerState<TaskView> {
                     child: MyTextField(
                       undoController: widget.bodyUndoController,
                       onUpdate: (text) {
+                        // Add dot point by entering '.. '
+                        if (text.length > 2 &&
+                            (text.substring(text.length - 3, text.length) ==
+                                '.. ')) {
+                          widget.bodyController.text =
+                              '${text.substring(0, text.length - 3)}• ';
+                        }
+
+                        // If last paragraph/ item starts with a dot, add another
+                        // on a new line when \n is entered
+                        List textList = text.split('\n');
+                        if (textList.length > 1 &&
+                            text.substring(text.length - 1, text.length) ==
+                                '\n' &&
+                            textList[textList.length - 2][0] == '•' &&
+                            textList[textList.length - 2] != '• ') {
+                          widget.bodyController.text = '$text• ';
+                        }
+
                         widget.task.setTaskContents(text);
                         db.updateTask(widget.taskID, widget.task);
                       },
@@ -332,6 +349,19 @@ class _TaskViewState extends ConsumerState<TaskView> {
             ],
           ),
         ),
+        // floatingActionButton: Align(
+        //   alignment: Alignment.bottomLeft,
+        //   child: FloatingActionButton.small(
+        //     backgroundColor: Colors.white,
+        //     onPressed: () {
+        //       setState(() {
+        //         checklist = !checklist;
+        //       });
+        //     },
+        //     child: const Icon(Icons.check_box_outlined),
+        //   ),
+        // ),
+        // floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       ),
     );
   }
