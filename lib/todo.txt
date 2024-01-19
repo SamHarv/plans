@@ -1,6 +1,5 @@
+- Publish to Playstore
+- Testing and documentation
 - Fix reordering
-
-- Implement auth page to be navigated to via profile icon
-
-
-Change isRegistered in ProfileView
+- Add Checklist tasks
+- Test on iOS

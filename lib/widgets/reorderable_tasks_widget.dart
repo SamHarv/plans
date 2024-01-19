@@ -2,49 +2,52 @@ import 'package:beamer/beamer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:plans/constants.dart';
-import 'package:plans/services/firestore.dart';
-import 'package:plans/state_management/riverpod_providers.dart';
-import '../models/task.dart';
 
-class TasksReorderable extends ConsumerStatefulWidget {
-  const TasksReorderable({super.key});
+import '../constants.dart';
+import '../services/firestore.dart';
+import '../state_management/riverpod_providers.dart';
+import '../models/task_model.dart';
+
+class ReorderableTasksWidget extends ConsumerStatefulWidget {
+  const ReorderableTasksWidget({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
-      _TasksReorderableState();
+      _ReorderableTasksWidgetState();
 }
 
-class _TasksReorderableState extends ConsumerState<TasksReorderable> {
+class _ReorderableTasksWidgetState
+    extends ConsumerState<ReorderableTasksWidget> {
   late FirestoreService db;
   late List<Task> tasks;
-  // late Future<List<Task>> tasks;
 
   @override
   void initState() {
     super.initState();
 
-    // Load tasks from Firestore and update the state
+    // Initialise database and tasks
     db = ref.read(database);
     tasks = ref.read(tasksProvider);
 
+    // Get tasks and map them to list for implementation
+    // This allows reordering of tasks
     db.getTasks().listen((snapshot) {
       if (snapshot.docs.isNotEmpty) {
-        // setState(() {
         tasks = snapshot.docs.map((doc) {
           return Task(
             taskID: doc['taskID'],
-            taskColour: db.colorFromString(doc['taskColour']),
+            taskColour: db.getColourFromString(doc['taskColour']),
             taskHeading: doc['taskHeading'],
             taskContents: doc['taskContents'],
             taskTag: doc['taskTag'],
           );
         }).toList();
-        // });
       }
     });
   }
 
+  // Update order of tasks in database by updating timestamp
+  // May need to find a way to improve efficiency
   Future<void> updateOrder(int oldIndex, int newIndex) async {
     if (oldIndex < newIndex) {
       newIndex -= 1;
@@ -60,8 +63,7 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
 
   @override
   Widget build(BuildContext context) {
-    // Update order of tasks when dragged
-
+    // Listen to task changes
     return StreamBuilder<QuerySnapshot>(
       stream: db.getTasks(),
       builder: (context, snapshot) {
@@ -69,19 +71,19 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
           final tasksFromSnapshot = snapshot.data!.docs.map((doc) {
             return Task(
               taskID: doc['taskID'],
-              taskColour: db.colorFromString(doc['taskColour']),
+              taskColour: db.getColourFromString(doc['taskColour']),
               taskHeading: doc['taskHeading'],
               taskContents: doc['taskContents'],
               taskTag: doc['taskTag'],
             );
           }).toList();
 
+          // Build tasks for reordering and navigation to
           final tasks = tasksFromSnapshot.map((task) {
             return InkResponse(
               borderRadius: BorderRadius.circular(64),
-              key: ValueKey(task.taskID), // issue here
+              key: ValueKey(task.taskID),
               onTap: () {
-                // create task to navigate to based off selected task
                 final destinationTask = Task(
                   taskColour: task.taskColour,
                   taskHeading: task.taskHeading,
@@ -89,14 +91,8 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
                   taskTag: task.taskTag,
                   taskID: task.taskID,
                 );
-                // if (task has subtasks) {
-                // Navigate to subtask display taking task as argument;
-                // } else {
-                // Navigate to task display taking task as argument;
-                // }
-                // Open corresponding task
                 Beamer.of(context)
-                    .beamToNamed('/task-view', data: destinationTask);
+                    .beamToNamed('/task-page', data: destinationTask);
               },
               child: SizedBox(
                 //key: ValueKey(task),
@@ -111,9 +107,7 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
                       borderRadius: BorderRadius.circular(64),
                       border: Border.all(
                         // Have border if taskColour matches background colour
-                        color: task.taskColour == colour
-                            ? Colors.blueGrey
-                            : colour,
+                        color: task.taskColour == colour ? blueGrey : colour,
                         width: 1,
                       ),
                     ),
@@ -137,12 +131,11 @@ class _TasksReorderableState extends ConsumerState<TasksReorderable> {
             );
           }).toList();
           return ReorderableListView(
-            // make task edges rounded when moving
+            // Make task edges rounded when highlighted
             proxyDecorator: (child, index, animation) => Material(
               borderRadius: BorderRadius.circular(64),
               child: child,
             ),
-
             onReorder: (oldIndex, newIndex) async {
               await updateOrder(oldIndex, newIndex);
             },

@@ -2,18 +2,18 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:plans/state_management/riverpod_providers.dart';
-import 'package:plans/widgets/palette_colour.dart';
 
+import '/state_management/riverpod_providers.dart';
+import '/widgets/palette_colour_widget.dart';
 import '../constants.dart';
-import '../models/task.dart';
+import '../models/task_model.dart';
 import '../widgets/custom_text_field.dart';
-import '../widgets/dialog.dart';
+import '../widgets/custom_dialog.dart';
 
-class TaskView extends ConsumerStatefulWidget {
+class TaskPage extends ConsumerStatefulWidget {
   final Task task;
   final String taskID;
-  // to be declared in build
+  // Text controllers to be declared in build
   late final TextEditingController headingController =
       TextEditingController(text: task.taskHeading);
   late final TextEditingController bodyController =
@@ -22,30 +22,30 @@ class TaskView extends ConsumerStatefulWidget {
       UndoHistoryController();
   late final UndoHistoryController bodyUndoController = UndoHistoryController();
 
-  TaskView({
+  TaskPage({
     super.key,
     required this.task,
     required this.taskID,
   });
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _TaskViewState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _TaskPageState();
 }
 
-class _TaskViewState extends ConsumerState<TaskView> {
-  bool checklist = false;
+class _TaskPageState extends ConsumerState<TaskPage> {
+  // For later implementation of checklist functionality
+  // bool checklist = false;
   @override
   Widget build(BuildContext context) {
     final db = ref.read(database);
-
     return PopScope(
       canPop: true,
-      // Save in the event that pop fails
+      // Ensure task is saved on swipe to exit
       onPopInvoked: (didPop) {
         if (didPop && widget.headingController.text != "") {
           // Set text field values to task values
-          widget.task.setTaskHeading(widget.headingController.text);
-          widget.task.setTaskContents(widget.bodyController.text);
+          widget.task.taskHeading = widget.headingController.text;
+          widget.task.taskContents = widget.bodyController.text;
           // Update to Firestore
           db.updateTask(widget.task.taskID, widget.task);
         }
@@ -62,7 +62,7 @@ class _TaskViewState extends ConsumerState<TaskView> {
               ),
             ),
           ),
-          backgroundColor: widget.task.getTaskColour(),
+          backgroundColor: widget.task.taskColour,
           leading: IconButton(
             icon: const Icon(
               Icons.arrow_back,
@@ -71,19 +71,16 @@ class _TaskViewState extends ConsumerState<TaskView> {
             onPressed: () {
               if (widget.headingController.text != "") {
                 // Set text field values to task values
-                widget.task.setTaskHeading(widget.headingController.text);
-                widget.task.setTaskContents(widget.bodyController.text);
+                widget.task.taskHeading = widget.headingController.text;
+                widget.task.taskContents = widget.bodyController.text;
                 // Update to Firestore
                 db.updateTask(widget.task.taskID, widget.task);
-
-                // Navigator.pop(context);
                 Beamer.of(context).beamToNamed('/home');
-                // Beamer.of(context).beamBack();
               } else if (widget.headingController.text == "") {
-                // Save before exit alert
+                // Alert to indicate task will not be saved
                 showDialog(
                   context: context,
-                  builder: (context) => PlansDialog(
+                  builder: (context) => CustomDialog(
                     dialogHeading: "Enter a Heading to Save",
                     dialogContent: const Text(
                       "If you would like to save the task, please enter a "
@@ -103,11 +100,7 @@ class _TaskViewState extends ConsumerState<TaskView> {
                       ),
                       TextButton(
                         onPressed: () {
-                          // Double pop back to home screen
-                          // DELETE TASK
                           db.deleteTask(widget.task.taskID);
-                          // Beamer.of(context).beamBack();
-                          // Navigator.pop(context);
                           Beamer.of(context).beamToNamed('/home');
                         },
                         child: const Text(
@@ -151,12 +144,9 @@ class _TaskViewState extends ConsumerState<TaskView> {
               onPressed: () {
                 showDialog(
                   context: context,
-                  builder: (context) => PlansDialog(
+                  builder: (context) => CustomDialog(
                     dialogHeading: 'Pick a Colour',
                     dialogContent: GestureDetector(
-                      // onTapCancel: () {
-                      //   setState(() {});
-                      // },
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -164,35 +154,35 @@ class _TaskViewState extends ConsumerState<TaskView> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              PaletteColour(
+                              PaletteColourWidget(
                                   paletteColour: blue, task: widget.task),
-                              PaletteColour(
+                              PaletteColourWidget(
                                   paletteColour: red, task: widget.task),
-                              PaletteColour(
+                              PaletteColourWidget(
                                   paletteColour: green, task: widget.task),
                             ],
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              PaletteColour(
+                              PaletteColourWidget(
                                   paletteColour: blueGrey, task: widget.task),
-                              PaletteColour(
+                              PaletteColourWidget(
                                   paletteColour: yellow, task: widget.task),
-                              PaletteColour(
+                              PaletteColourWidget(
                                   paletteColour: orange, task: widget.task),
-                              PaletteColour(
+                              PaletteColourWidget(
                                   paletteColour: colour, task: widget.task)
                             ],
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              PaletteColour(
+                              PaletteColourWidget(
                                   paletteColour: brown, task: widget.task),
-                              PaletteColour(
+                              PaletteColourWidget(
                                   paletteColour: pink, task: widget.task),
-                              PaletteColour(
+                              PaletteColourWidget(
                                   paletteColour: black, task: widget.task),
                             ],
                           ),
@@ -211,10 +201,11 @@ class _TaskViewState extends ConsumerState<TaskView> {
                       ),
                       TextButton(
                         onPressed: () {
-                          // Save selected colour to task
-                          // task.setTaskColour(selectedColour);
-                          db.updateTask(widget.taskID, widget.task);
-                          setState(() {});
+                          // Save selected colour to task and update UI
+                          setState(() {
+                            widget.task.taskColour = widget.task.taskColour;
+                            db.updateTask(widget.taskID, widget.task);
+                          });
                           Navigator.pop(context);
                         },
                         child: const Text(
@@ -227,25 +218,16 @@ class _TaskViewState extends ConsumerState<TaskView> {
                 );
               },
             ),
-            // Add a tag to the task
-            // IconButton(
-            //   icon: const Icon(
-            //     Icons.sell,
-            //     color: Colors.white,
-            //   ),
-            //   onPressed: () {},
-            // ),
-            // Delete the task
             IconButton(
               icon: const Icon(
                 Icons.delete,
                 color: Colors.white,
               ),
               onPressed: () {
-                // show dialog to ask if sure to delete
+                // Show dialog to ask if sure to delete
                 showDialog(
                   context: context,
-                  builder: (context) => PlansDialog(
+                  builder: (context) => CustomDialog(
                     dialogHeading: "Delete Task",
                     dialogContent: const Text(
                       "Are you sure you want to delete this task?",
@@ -264,13 +246,10 @@ class _TaskViewState extends ConsumerState<TaskView> {
                       ),
                       TextButton(
                         onPressed: () {
-                          // Double pop back to home screen
-                          // DELETE TASK
+                          // Delete the task
                           db.deleteTask(widget.task.taskID);
                           Navigator.pop(context);
-                          // Navigator.pop(context);
                           Beamer.of(context).beamToNamed('/home');
-                          // Beamer.of(context).beamBack();
                         },
                         child: const Text(
                           'Delete',
@@ -289,14 +268,14 @@ class _TaskViewState extends ConsumerState<TaskView> {
           padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
           child: Column(
             children: [
-              // Type heading
               const SizedBox(height: 16),
+              // Heading
               Align(
                   alignment: Alignment.topLeft,
-                  child: MyTextField(
+                  child: CustomTextField(
                     undoController: widget.headingUndoController,
                     onUpdate: (text) {
-                      widget.task.setTaskHeading(text);
+                      widget.task.taskHeading = text;
                       db.updateTask(widget.taskID, widget.task);
                     },
                     controller: widget.headingController,
@@ -306,11 +285,12 @@ class _TaskViewState extends ConsumerState<TaskView> {
                     style: headingStyle,
                   )),
               const Divider(),
+              // Content field
               Expanded(
                 child: SingleChildScrollView(
                   child: Align(
                     alignment: Alignment.topLeft,
-                    child: MyTextField(
+                    child: CustomTextField(
                       undoController: widget.bodyUndoController,
                       onUpdate: (text) {
                         // Add dot point by entering '.. '
@@ -320,7 +300,6 @@ class _TaskViewState extends ConsumerState<TaskView> {
                           widget.bodyController.text =
                               '${text.substring(0, text.length - 3)}• ';
                         }
-
                         // If last paragraph/ item starts with a dot, add another
                         // on a new line when \n is entered
                         List textList = text.split('\n');
@@ -331,17 +310,15 @@ class _TaskViewState extends ConsumerState<TaskView> {
                             textList[textList.length - 2] != '• ') {
                           widget.bodyController.text = '$text• ';
                         }
-
-                        widget.task.setTaskContents(text);
+                        // Constantly save
+                        widget.task.taskContents = text;
                         db.updateTask(widget.taskID, widget.task);
                       },
-
                       controller: widget.bodyController,
                       hintText: "Click here to add notes",
                       maxLines: null,
                       fontSize: 18,
                       style: bodyStyle,
-                      // height: mediaHeight - 140,
                     ),
                   ),
                 ),
@@ -349,19 +326,6 @@ class _TaskViewState extends ConsumerState<TaskView> {
             ],
           ),
         ),
-        // floatingActionButton: Align(
-        //   alignment: Alignment.bottomLeft,
-        //   child: FloatingActionButton.small(
-        //     backgroundColor: Colors.white,
-        //     onPressed: () {
-        //       setState(() {
-        //         checklist = !checklist;
-        //       });
-        //     },
-        //     child: const Icon(Icons.check_box_outlined),
-        //   ),
-        // ),
-        // floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       ),
     );
   }

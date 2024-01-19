@@ -3,23 +3,33 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:plans/services/firestore.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '/services/firestore.dart';
+import '/widgets/email_password_field.dart';
 import '../constants.dart';
 import '../state_management/riverpod_providers.dart';
 
-class SignUpView extends ConsumerStatefulWidget {
-  const SignUpView({super.key});
+final Uri _url = Uri.parse('https://oxygentech.com.au');
 
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _SignUpViewState();
+Future<void> _launchUrl() async {
+  if (!await launchUrl(_url)) {
+    throw 'Could not launch $_url';
+  }
 }
 
-class _SignUpViewState extends ConsumerState<SignUpView> {
-  // final formKey = GlobalKey<FormState>();
+class SignUpPage extends ConsumerStatefulWidget {
+  const SignUpPage({super.key});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _SignUpPageState();
+}
+
+class _SignUpPageState extends ConsumerState<SignUpPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  // Create new user
   Future signUp(FirestoreService db) async {
     try {
       UserCredential user =
@@ -27,18 +37,15 @@ class _SignUpViewState extends ConsumerState<SignUpView> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-
-      // add user with user ID from user
+      // Add user with user ID from Auth to Firestore
       await db.addUser(userID: user.user!.uid);
-
-      showErrorMessage('Account created!');
+      showMessage('Account created!');
     } on Exception catch (e) {
-      // print(e);
-      showErrorMessage(e.toString());
+      showMessage(e.toString());
     }
   }
 
-  void showErrorMessage(String message) {
+  void showMessage(String message) {
     showDialog(
       context: context,
       builder: (context) {
@@ -81,14 +88,20 @@ class _SignUpViewState extends ConsumerState<SignUpView> {
         ),
         backgroundColor: colour,
         automaticallyImplyLeading: false,
-        actions: const [
-          // Push title to the left
-          SizedBox(
-            width: 10,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+            child: InkWell(
+              child: Image.asset(
+                // O2Tech logo => navigate to webpage
+                'images/2.png',
+                fit: BoxFit.contain,
+                height: 24.0,
+              ),
+              onTap: () => _launchUrl(),
+            ),
           ),
-          SizedBox(
-            width: 10,
-          ),
+          const SizedBox(width: 8),
         ],
       ),
       body: Center(
@@ -100,70 +113,21 @@ class _SignUpViewState extends ConsumerState<SignUpView> {
                 'Sign Up',
                 style: headingStyle,
               ),
-              const SizedBox(
-                height: 20,
+              gapH20,
+              EmailPasswordField(
+                textController: _emailController,
+                obscurePassword: false,
+                hintText: 'Email',
+                mediaWidth: mediaWidth,
               ),
-              SizedBox(
-                width: mediaWidth * 0.8,
-                height: 60,
-                child: TextField(
-                  controller: _emailController,
-                  textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.blueGrey,
-                      ),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(64),
-                      ),
-                    ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.blueGrey,
-                      ),
-                    ),
-                    hintText: 'Email',
-                    hintStyle: TextStyle(
-                      color: Colors.grey[500],
-                    ),
-                  ),
-                  style: bodyStyle,
-                ),
+              gapH20,
+              EmailPasswordField(
+                textController: _passwordController,
+                obscurePassword: true,
+                hintText: 'Password',
+                mediaWidth: mediaWidth,
               ),
-              const SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                width: mediaWidth * 0.8,
-                height: 60,
-                child: TextField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.blueGrey,
-                      ),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(64),
-                      ),
-                    ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blueGrey),
-                    ),
-                    hintText: 'Password',
-                    hintStyle: TextStyle(
-                      color: Colors.grey[500],
-                    ),
-                  ),
-                  style: bodyStyle,
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
+              gapH20,
               SizedBox(
                 width: mediaWidth * 0.8,
                 height: 60,
@@ -186,17 +150,17 @@ class _SignUpViewState extends ConsumerState<SignUpView> {
                       },
                     );
                     signUp(db);
-
-                    Future.delayed(const Duration(seconds: 2), () {
-                      Navigator.pop(context);
-                      Beamer.of(context).beamToNamed('/home');
-                    });
+                    Future.delayed(
+                      const Duration(seconds: 2),
+                      () {
+                        Navigator.pop(context);
+                        Beamer.of(context).beamToNamed('/home');
+                      },
+                    );
                   },
                   child: const Text(
                     'Go',
-                    style:
-                        // bodyStyle,
-                        TextStyle(
+                    style: TextStyle(
                       color: colour,
                       fontSize: 18,
                       fontFamily: 'Roboto',
@@ -204,15 +168,13 @@ class _SignUpViewState extends ConsumerState<SignUpView> {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              gapH20,
               TextButton(
                 onPressed: () {
-                  Beamer.of(context).beamToNamed('/profile');
+                  Beamer.of(context).beamToNamed('/sign-in');
                 },
                 child: const Text(
-                  'Log In',
+                  'Sign In',
                   style: TextStyle(
                     color: Colors.white,
                   ),

@@ -3,13 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../constants.dart';
 
-class PlansDialog extends ConsumerWidget {
+class CustomDialog extends ConsumerWidget {
   // Custom dialog
   final String dialogHeading;
+  // Content not limited to text (e.g. colour palette)
   final Widget? dialogContent;
   final List<Widget> dialogActions;
 
-  const PlansDialog(
+  const CustomDialog(
       {super.key,
       required this.dialogHeading,
       this.dialogContent,

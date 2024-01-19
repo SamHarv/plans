@@ -2,24 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../constants.dart';
-import '../models/task.dart';
+import '../models/task_model.dart';
 import '../state_management/riverpod_providers.dart';
 
-class PaletteColour extends ConsumerStatefulWidget {
+class PaletteColourWidget extends ConsumerStatefulWidget {
   final Color paletteColour;
   final Task task;
 
-  const PaletteColour({
+  const PaletteColourWidget({
     super.key,
     required this.task,
     this.paletteColour = colour,
   });
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _PaletteColourState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _PaletteColourWidgetState();
 }
 
-class _PaletteColourState extends ConsumerState<PaletteColour> {
+class _PaletteColourWidgetState extends ConsumerState<PaletteColourWidget> {
   @override
   Widget build(BuildContext context) {
     final db = ref.read(database);
@@ -28,12 +29,10 @@ class _PaletteColourState extends ConsumerState<PaletteColour> {
       // make splash circular
       borderRadius: BorderRadius.circular(50),
       onTap: () {
-        // set colour
-
-        // update the state on tap
+        // Set task colour to palette colour
         db.updateTask(widget.task.taskID, widget.task);
         setState(() {
-          widget.task.setTaskColour(widget.paletteColour);
+          widget.task.taskColour = widget.paletteColour;
         });
       },
       child: Padding(
@@ -44,13 +43,6 @@ class _PaletteColourState extends ConsumerState<PaletteColour> {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: widget.paletteColour,
-            // border: Border.all(
-            //   // display colour based on db status
-            //   color: widget.task.getTaskColour() == widget.paletteColour
-            //       ? Colors.white
-            //       : widget.paletteColour,
-            //   width: 1,
-            // ),
           ),
         ),
       ),
