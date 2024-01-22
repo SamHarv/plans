@@ -18,6 +18,10 @@ class FirestoreService {
 
   // Create new task for current user
   Future<void> addTask({required Task task}) async {
+    //encrypt taskHeading
+
+    //encrypt taskContents
+
     await users
         .doc(FirebaseAuth.instance.currentUser?.uid)
         .collection('tasks')

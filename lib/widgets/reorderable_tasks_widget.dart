@@ -33,31 +33,45 @@ class _ReorderableTasksWidgetState
     // This allows reordering of tasks
     db.getTasks().listen((snapshot) {
       if (snapshot.docs.isNotEmpty) {
-        tasks = snapshot.docs.map((doc) {
-          return Task(
-            taskID: doc['taskID'],
-            taskColour: db.getColourFromString(doc['taskColour']),
-            taskHeading: doc['taskHeading'],
-            taskContents: doc['taskContents'],
-            taskTag: doc['taskTag'],
-          );
-        }).toList();
+        setState(() {
+          tasks = snapshot.docs.map((doc) {
+            return Task(
+              taskID: doc['taskID'],
+              taskColour: db.getColourFromString(doc['taskColour']),
+              taskHeading: doc['taskHeading'],
+              taskContents: doc['taskContents'],
+              taskTag: doc['taskTag'],
+            );
+          }).toList();
+        });
       }
     });
   }
 
   // Update order of tasks in database by updating timestamp
-  // May need to find a way to improve efficiency
+  // Need to find a way to improve efficiency
   Future<void> updateOrder(int oldIndex, int newIndex) async {
     if (oldIndex < newIndex) {
       newIndex -= 1;
     }
+
     tasks.insert(newIndex, tasks.removeAt(oldIndex));
+
+    // Reverse list to update timestamp in correct order
     tasks = tasks.reversed.toList();
+
     final batch = FirebaseFirestore.instance.batch();
-    for (Task task in tasks) {
-      batch.update(db.tasks.doc(task.taskID), {'timestamp': Timestamp.now()});
+
+    // Using indexed numerical key rather than actual time to update timestamp
+    // for improved efficiency
+    for (int i = 0; i < tasks.length; i++) {
+      batch.update(db.tasks.doc(tasks[i].taskID), {'timestamp': i});
     }
+
+    // for (Task task in tasks) {
+    //   batch.update(db.tasks.doc(task.taskID), {'timestamp': Timestamp.now()});
+    // }
+
     await batch.commit();
   }
 
