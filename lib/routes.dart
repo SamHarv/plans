@@ -2,7 +2,6 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
 import 'models/task_model.dart';
-
 import 'pages/sign_up_page.dart';
 import 'pages/forgot_password_page.dart';
 import 'pages/sign_in_page.dart';
@@ -27,7 +26,6 @@ final routerDelegate = BeamerDelegate(
           key: const ValueKey('task-page'),
           type: BeamPageType.fadeTransition,
           title: '$data.taskHeading',
-          // Carry task to RaskView
           child: TaskPage(task: data as Task, taskID: data.taskID),
         );
       },

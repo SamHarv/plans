@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
 
-class CustomTextField extends StatelessWidget {
-  const CustomTextField({
+class CustomTextFieldWidget extends StatelessWidget {
+  final double? height;
+  final TextEditingController controller;
+  final String hintText;
+  final int? maxLines;
+  final double fontSize;
+  final TextStyle style;
+  final Function(String) onUpdate;
+  final UndoHistoryController undoController;
+
+  const CustomTextFieldWidget({
     Key? key,
     required this.controller,
     required this.hintText,
@@ -12,15 +21,6 @@ class CustomTextField extends StatelessWidget {
     required this.undoController,
     this.height,
   }) : super(key: key);
-
-  final double? height;
-  final TextEditingController controller;
-  final String hintText;
-  final int? maxLines;
-  final double fontSize;
-  final TextStyle style;
-  final Function(String) onUpdate;
-  final UndoHistoryController undoController;
 
   @override
   Widget build(BuildContext context) {

@@ -2,13 +2,12 @@ import 'package:beamer/beamer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '/widgets/email_password_field.dart';
-import '../constants.dart';
+import '/widgets/login_field_widget.dart';
+import '/constants.dart';
 
-final Uri _url = Uri.parse('https://oxygentech.com.au');
+final _url = Uri.parse('https://oxygentech.com.au');
 
 Future<void> _launchUrl() async {
   if (!await launchUrl(_url)) {
@@ -24,8 +23,8 @@ class SignInPage extends ConsumerStatefulWidget {
 }
 
 class _SignInPageState extends ConsumerState<SignInPage> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   Future signIn() async {
     try {
@@ -64,7 +63,7 @@ class _SignInPageState extends ConsumerState<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
-    final double mediaWidth = MediaQuery.of(context).size.width;
+    final mediaWidth = MediaQuery.of(context).size.width;
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
@@ -72,16 +71,7 @@ class _SignInPageState extends ConsumerState<SignInPage> {
         return Scaffold(
           backgroundColor: colour,
           appBar: AppBar(
-            title: Text(
-              'Plans',
-              style: GoogleFonts.caveat(
-                textStyle: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 40,
-                  fontFamily: 'Caveat',
-                ),
-              ),
-            ),
+            title: appTitle,
             backgroundColor: colour,
             automaticallyImplyLeading: userLoggedIn ? true : false,
             leading: userLoggedIn
@@ -91,7 +81,6 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                       color: Colors.white,
                     ),
                     onPressed: () {
-                      // Navigate to home page when built
                       Beamer.of(context).beamToNamed('/home');
                     },
                   )
@@ -140,9 +129,7 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                             },
                             child: const Text(
                               'Sign Out',
-                              style:
-                                  // bodyStyle,
-                                  TextStyle(
+                              style: TextStyle(
                                 color: colour,
                                 fontSize: 18,
                                 fontFamily: 'Roboto',
@@ -163,7 +150,7 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                           style: headingStyle,
                         ),
                         gapH20,
-                        EmailPasswordField(
+                        LoginFieldWidget(
                           textController: _emailController,
                           obscurePassword: false,
                           hintText: 'Email',
@@ -172,7 +159,7 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                         const SizedBox(
                           height: 20,
                         ),
-                        EmailPasswordField(
+                        LoginFieldWidget(
                           textController: _passwordController,
                           obscurePassword: true,
                           hintText: 'Password',

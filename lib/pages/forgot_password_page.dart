@@ -2,13 +2,12 @@ import 'package:beamer/beamer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:plans/widgets/email_password_field.dart';
+import 'package:plans/widgets/login_field_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../constants.dart';
+import '/constants.dart';
 
-final Uri _url = Uri.parse('https://oxygentech.com.au');
+final _url = Uri.parse('https://oxygentech.com.au');
 
 Future<void> _launchUrl() async {
   if (!await launchUrl(_url)) {
@@ -25,8 +24,8 @@ class ForgotPasswordPage extends ConsumerStatefulWidget {
 }
 
 class _ForgotPasswordPageWidgetState extends ConsumerState<ForgotPasswordPage> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   // Send email to reset password
   void resetPassword() async {
@@ -73,16 +72,7 @@ class _ForgotPasswordPageWidgetState extends ConsumerState<ForgotPasswordPage> {
         return Scaffold(
           backgroundColor: colour,
           appBar: AppBar(
-            title: Text(
-              'Plans',
-              style: GoogleFonts.caveat(
-                textStyle: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 40,
-                  fontFamily: 'Caveat',
-                ),
-              ),
-            ),
+            title: appTitle,
             backgroundColor: colour,
             automaticallyImplyLeading: false,
             actions: [
@@ -90,7 +80,6 @@ class _ForgotPasswordPageWidgetState extends ConsumerState<ForgotPasswordPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
                 child: InkWell(
                   child: Image.asset(
-                    // O2Tech logo => navigate to webpage
                     'images/2.png',
                     fit: BoxFit.contain,
                     height: 24.0,
@@ -112,7 +101,7 @@ class _ForgotPasswordPageWidgetState extends ConsumerState<ForgotPasswordPage> {
                     textAlign: TextAlign.center,
                   ),
                   gapH20,
-                  EmailPasswordField(
+                  LoginFieldWidget(
                     textController: _emailController,
                     obscurePassword: false,
                     hintText: 'Email',

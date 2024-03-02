@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 // Primary colour
 const Color colour = Color.fromARGB(255, 55, 72, 84);
@@ -28,4 +29,15 @@ const TextStyle bodyStyle = TextStyle(
 
 const SizedBox gapH20 = SizedBox(
   height: 20,
+);
+
+final appTitle = Text(
+  'Plans',
+  style: GoogleFonts.caveat(
+    textStyle: const TextStyle(
+      color: Colors.white,
+      fontSize: 40,
+      fontFamily: 'Caveat',
+    ),
+  ),
 );

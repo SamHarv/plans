@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../models/task_model.dart';
-import '../constants.dart';
+import '/models/task_model.dart';
+import '/constants.dart';
 
 class FirestoreService {
   // Get collection of users
@@ -18,10 +18,6 @@ class FirestoreService {
 
   // Create new task for current user
   Future<void> addTask({required Task task}) async {
-    //encrypt taskHeading
-
-    //encrypt taskContents
-
     await users
         .doc(FirebaseAuth.instance.currentUser?.uid)
         .collection('tasks')
@@ -71,7 +67,6 @@ class FirestoreService {
 
   // Get colour from String
   Color getColourFromString(String colourString) {
-    //const String colourString = "Color(0xff374854)";
     const String blueString = "Color(0xff014c63)";
     const String redString = "Color(0xff890000)";
     const String yellowString = "Color(0xffba9600)";

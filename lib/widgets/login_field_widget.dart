@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../constants.dart';
+import '/constants.dart';
 
-class EmailPasswordField extends ConsumerWidget {
+class LoginFieldWidget extends ConsumerWidget {
   final TextEditingController textController;
   final bool obscurePassword;
   final String hintText;
   final double mediaWidth;
 
-  const EmailPasswordField({
+  const LoginFieldWidget({
     super.key,
     required this.textController,
     required this.obscurePassword,
@@ -29,7 +29,7 @@ class EmailPasswordField extends ConsumerWidget {
         decoration: InputDecoration(
           border: const OutlineInputBorder(
             borderSide: BorderSide(
-              color: Colors.blueGrey,
+              color: blueGrey,
             ),
             borderRadius: BorderRadius.all(
               Radius.circular(64),

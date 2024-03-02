@@ -2,8 +2,8 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 
+import 'firebase_options.dart';
 import 'constants.dart';
 import 'routes.dart';
 
@@ -30,7 +30,6 @@ class Plans extends StatelessWidget {
         colorSchemeSeed: colour,
         fontFamily: 'Roboto',
       ),
-      // Always dark mode
       themeMode: ThemeMode.dark,
     );
   }

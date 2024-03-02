@@ -1,12 +1,12 @@
+import 'package:flutter/material.dart';
 import 'package:beamer/beamer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../constants.dart';
-import '../services/firestore.dart';
-import '../state_management/riverpod_providers.dart';
-import '../models/task_model.dart';
+import '/constants.dart';
+import '/services/firestore_service.dart';
+import '/state_management/riverpod_providers.dart';
+import '/models/task_model.dart';
 
 class ReorderableTasksWidget extends ConsumerStatefulWidget {
   const ReorderableTasksWidget({super.key});
@@ -25,53 +25,39 @@ class _ReorderableTasksWidgetState
   void initState() {
     super.initState();
 
-    // Initialise database and tasks
     db = ref.read(database);
     tasks = ref.read(tasksProvider);
 
-    // Get tasks and map them to list for implementation
-    // This allows reordering of tasks
+    // Get tasks and map them to list for implementation in reorderable list
     db.getTasks().listen((snapshot) {
       if (snapshot.docs.isNotEmpty) {
-        setState(() {
-          tasks = snapshot.docs.map((doc) {
-            return Task(
-              taskID: doc['taskID'],
-              taskColour: db.getColourFromString(doc['taskColour']),
-              taskHeading: doc['taskHeading'],
-              taskContents: doc['taskContents'],
-              taskTag: doc['taskTag'],
-            );
-          }).toList();
-        });
+        tasks = snapshot.docs.map((doc) {
+          return Task(
+            taskID: doc['taskID'],
+            taskColour: db.getColourFromString(doc['taskColour']),
+            taskHeading: doc['taskHeading'],
+            taskContents: doc['taskContents'],
+            taskTag: doc['taskTag'],
+          );
+        }).toList();
       }
     });
   }
 
-  // Update order of tasks in database by updating timestamp
-  // Need to find a way to improve efficiency
+  // Update order of tasks
   Future<void> updateOrder(int oldIndex, int newIndex) async {
     if (oldIndex < newIndex) {
       newIndex -= 1;
     }
-
     tasks.insert(newIndex, tasks.removeAt(oldIndex));
-
     // Reverse list to update timestamp in correct order
     tasks = tasks.reversed.toList();
-
     final batch = FirebaseFirestore.instance.batch();
-
     // Using indexed numerical key rather than actual time to update timestamp
     // for improved efficiency
     for (int i = 0; i < tasks.length; i++) {
       batch.update(db.tasks.doc(tasks[i].taskID), {'timestamp': i});
     }
-
-    // for (Task task in tasks) {
-    //   batch.update(db.tasks.doc(task.taskID), {'timestamp': Timestamp.now()});
-    // }
-
     await batch.commit();
   }
 
@@ -108,35 +94,30 @@ class _ReorderableTasksWidgetState
                 Beamer.of(context)
                     .beamToNamed('/task-page', data: destinationTask);
               },
-              child: SizedBox(
-                //key: ValueKey(task),
-                height: 100,
-                width: double.infinity,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 0, vertical: 4),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: task.taskColour,
-                      borderRadius: BorderRadius.circular(64),
-                      border: Border.all(
-                        // Have border if taskColour matches background colour
-                        color: task.taskColour == colour ? blueGrey : colour,
-                        width: 1,
-                      ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+                child: Container(
+                  height: 100,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: task.taskColour,
+                    borderRadius: BorderRadius.circular(64),
+                    border: Border.all(
+                      color: task.taskColour == colour ? blueGrey : colour,
+                      width: 1,
                     ),
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 0,
-                        ),
-                        child: Text(
-                          task.taskHeading,
-                          style: headingStyle,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
+                  ),
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 0,
+                      ),
+                      child: Text(
+                        task.taskHeading,
+                        style: headingStyle,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                       ),
                     ),
                   ),

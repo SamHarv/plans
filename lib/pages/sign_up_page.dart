@@ -2,15 +2,14 @@ import 'package:beamer/beamer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '/services/firestore.dart';
-import '/widgets/email_password_field.dart';
-import '../constants.dart';
-import '../state_management/riverpod_providers.dart';
+import '/services/firestore_service.dart';
+import '/widgets/login_field_widget.dart';
+import '/constants.dart';
+import '/state_management/riverpod_providers.dart';
 
-final Uri _url = Uri.parse('https://oxygentech.com.au');
+final _url = Uri.parse('https://oxygentech.com.au');
 
 Future<void> _launchUrl() async {
   if (!await launchUrl(_url)) {
@@ -26,10 +25,9 @@ class SignUpPage extends ConsumerStatefulWidget {
 }
 
 class _SignUpPageState extends ConsumerState<SignUpPage> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
-  // Create new user
   Future signUp(FirestoreService db) async {
     try {
       UserCredential user =
@@ -76,16 +74,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
     return Scaffold(
       backgroundColor: colour,
       appBar: AppBar(
-        title: Text(
-          'Plans',
-          style: GoogleFonts.caveat(
-            textStyle: const TextStyle(
-              color: Colors.white,
-              fontSize: 40,
-              fontFamily: 'Caveat',
-            ),
-          ),
-        ),
+        title: appTitle,
         backgroundColor: colour,
         automaticallyImplyLeading: false,
         actions: [
@@ -93,7 +82,6 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
             child: InkWell(
               child: Image.asset(
-                // O2Tech logo => navigate to webpage
                 'images/2.png',
                 fit: BoxFit.contain,
                 height: 24.0,
@@ -114,14 +102,14 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                 style: headingStyle,
               ),
               gapH20,
-              EmailPasswordField(
+              LoginFieldWidget(
                 textController: _emailController,
                 obscurePassword: false,
                 hintText: 'Email',
                 mediaWidth: mediaWidth,
               ),
               gapH20,
-              EmailPasswordField(
+              LoginFieldWidget(
                 textController: _passwordController,
                 obscurePassword: true,
                 hintText: 'Password',
