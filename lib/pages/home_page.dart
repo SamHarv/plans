@@ -89,19 +89,36 @@ class _HomePageState extends ConsumerState<HomePage> {
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: ReorderableTasksWidget(),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.white,
-        onPressed: () {
-          final newTask = Task(
-            taskColour: colour,
-            taskID: generateTaskID(),
-          );
-          db.addTask(task: newTask);
-          Beamer.of(context).beamToNamed('/task-page', data: newTask);
-        },
-        child: const Icon(
-          Icons.add,
-          color: colour,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            FloatingActionButton(
+              backgroundColor: Colors.white,
+              onPressed: () => Beamer.of(context).beamToNamed('/habit-tracker'),
+              child: const Icon(
+                Icons.calendar_month,
+                color: colour,
+              ),
+            ),
+            FloatingActionButton(
+              backgroundColor: Colors.white,
+              onPressed: () {
+                final newTask = Task(
+                  taskColour: colour,
+                  taskID: generateTaskID(),
+                );
+                db.addTask(task: newTask);
+                Beamer.of(context).beamToNamed('/task-page', data: newTask);
+              },
+              child: const Icon(
+                Icons.add,
+                color: colour,
+              ),
+            ),
+          ],
         ),
       ),
     );

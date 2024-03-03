@@ -7,6 +7,7 @@ import 'pages/forgot_password_page.dart';
 import 'pages/sign_in_page.dart';
 import 'pages/home_page.dart';
 import 'pages/task_page.dart';
+import 'pages/habit_tracker_page.dart';
 
 final routerDelegate = BeamerDelegate(
   notFoundRedirectNamed: '/home',
@@ -51,6 +52,14 @@ final routerDelegate = BeamerDelegate(
           type: BeamPageType.fadeTransition,
           title: 'Forgot Password - Plans',
           child: ForgotPasswordPage(),
+        );
+      },
+      '/habit-tracker': (context, state, data) {
+        return const BeamPage(
+          key: ValueKey('habit-tracker'),
+          type: BeamPageType.fadeTransition,
+          title: 'Habit Tracker - Plans',
+          child: HabitTrackerPage(),
         );
       },
     },
