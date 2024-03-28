@@ -4,7 +4,6 @@ import 'package:beamer/beamer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:plans/widgets/custom_dialog_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '/state_management/riverpod_providers.dart';
@@ -90,6 +89,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: ReorderableTasksWidget(),
       ),
+      // Comment out below
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Padding(
         padding: const EdgeInsets.all(32),
@@ -107,54 +107,60 @@ class _HomePageState extends ConsumerState<HomePage> {
             FloatingActionButton(
               backgroundColor: Colors.white,
               onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => CustomDialogWidget(
-                    dialogHeading: "Select Task Type",
-                    dialogActions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text(
-                          'Cancel',
-                          style: bodyStyle,
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          final newTask = Task(
-                            taskColour: colour,
-                            taskID: generateTaskID(),
-                          );
-                          db.addTask(task: newTask);
-                          Beamer.of(context)
-                              .beamToNamed('/task-page', data: newTask);
-                        },
-                        child: const Text(
-                          'Note',
-                          style: bodyStyle,
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          // TODO: Create new checklist
-                          // final newTask = Task(
-                          //   taskColour: colour,
-                          //   taskID: generateTaskID(),
-                          // );
-                          // db.addTask(task: newTask);
-                          // Beamer.of(context)
-                          //     .beamToNamed('/task-page', data: newTask);
-                        },
-                        child: const Text(
-                          'Note',
-                          style: bodyStyle,
-                        ),
-                      ),
-                    ],
-                  ),
+                final newTask = Task(
+                  taskColour: colour,
+                  taskID: generateTaskID(),
                 );
+                db.addTask(task: newTask);
+                Beamer.of(context).beamToNamed('/task-page', data: newTask);
+                // showDialog(
+                //   context: context,
+                //   builder: (context) => CustomDialogWidget(
+                //     dialogHeading: "Select Task Type",
+                //     dialogActions: [
+                //       TextButton(
+                //         onPressed: () {
+                //           Navigator.pop(context);
+                //         },
+                //         child: const Text(
+                //           'Cancel',
+                //           style: bodyStyle,
+                //         ),
+                //       ),
+                //       TextButton(
+                //         onPressed: () {
+                //           final newTask = Task(
+                //             taskColour: colour,
+                //             taskID: generateTaskID(),
+                //           );
+                //           db.addTask(task: newTask);
+                //           Beamer.of(context)
+                //               .beamToNamed('/task-page', data: newTask);
+                //         },
+                //         child: const Text(
+                //           'Note',
+                //           style: bodyStyle,
+                //         ),
+                //       ),
+                //       TextButton(
+                //         onPressed: () {
+                //           // TODO: Create new checklist
+                //           // final newTask = Task(
+                //           //   taskColour: colour,
+                //           //   taskID: generateTaskID(),
+                //           // );
+                //           // db.addTask(task: newTask);
+                //           // Beamer.of(context)
+                //           //     .beamToNamed('/task-page', data: newTask);
+                //         },
+                //         child: const Text(
+                //           'Checklist',
+                //           style: bodyStyle,
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // );
               },
               child: const Icon(
                 Icons.add,

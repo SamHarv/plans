@@ -37,6 +37,15 @@ class _SignInPageState extends ConsumerState<SignInPage> {
     }
   }
 
+  // delete account
+  Future<void> deleteAccount() async {
+    try {
+      await FirebaseAuth.instance.currentUser?.delete();
+    } on FirebaseAuthException catch (e) {
+      showMessage(e.toString());
+    }
+  }
+
   void showMessage(String message) {
     showDialog(
       context: context,
@@ -134,6 +143,56 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                                 fontSize: 18,
                                 fontFamily: 'Roboto',
                               ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        TextButton(
+                          onPressed: () {
+                            // delete account
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    backgroundColor: colour,
+                                    title: const Text(
+                                      'Are you sure you want to delete your account?',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text(
+                                          'Cancel',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          deleteAccount();
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text(
+                                          'Delete',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                });
+                          },
+                          child: const Text(
+                            'Delete Account',
+                            style: TextStyle(
+                              color: Colors.white,
                             ),
                           ),
                         ),

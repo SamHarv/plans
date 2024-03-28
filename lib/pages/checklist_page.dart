@@ -15,7 +15,7 @@ import '/widgets/custom_dialog_widget.dart';
 // Add dialog on HomePage to choose between task and checklist
 // Implement checklist model
 // Implement checklist backend with CRUD of checklists and checklist items
-// Should be displayed as a normal task
+// Should be displayed as a normal task, but navigate to a checklist if it is one
 
 class ChecklistPage extends ConsumerStatefulWidget {
   final Task task;

@@ -8,7 +8,7 @@
 PRODUCT_NAME = plans
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.example.plans
+PRODUCT_BUNDLE_IDENTIFIER = com.o2tech.plans
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2023 com.example. All rights reserved.
