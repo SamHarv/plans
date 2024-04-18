@@ -27,8 +27,10 @@ class _PaletteColourWidgetState extends ConsumerState<PaletteColourWidget> {
     return InkWell(
       borderRadius: BorderRadius.circular(50),
       onTap: () {
-        db.updateTask(widget.task.taskID, widget.task);
-        setState(() => widget.task.taskColour = widget.paletteColour);
+        setState(() {
+          db.updateTask(widget.task.taskID, widget.task);
+          widget.task.taskColour = widget.paletteColour;
+        });
       },
       child: Padding(
         padding: const EdgeInsets.all(4),

@@ -40,6 +40,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     final db = ref.read(database);
+
     // Recursively generate unique taskID
     String generateTaskID() {
       var generatedID = Random().nextInt(999999).toString();
@@ -62,6 +63,102 @@ class _HomePageState extends ConsumerState<HomePage> {
         automaticallyImplyLeading: false,
         backgroundColor: colour,
         actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.filter_list_alt,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              // Dialog to add filter
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text(
+                    'Filter Tasks',
+                    style: headingStyle,
+                  ),
+                  backgroundColor: Colors.black,
+                  content: StatefulBuilder(
+                    builder: (BuildContext context, StateSetter setState) {
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ListTile(
+                            title: const Text(
+                              'All',
+                              style: bodyStyle,
+                            ),
+                            leading: Radio(
+                              activeColor: colour,
+                              value: '',
+                              groupValue: ref.watch(filterProvider),
+                              onChanged: (value) {
+                                setState(() {
+                                  ref.read(filterProvider.notifier).state =
+                                      value.toString();
+                                  ref.read(isFilteredProvider.notifier).state =
+                                      false;
+                                });
+                              },
+                            ),
+                          ),
+                          ListTile(
+                            title: const Text(
+                              'O2Tech',
+                              style: bodyStyle,
+                            ),
+                            leading: Radio(
+                              activeColor: colour,
+                              value: 'O2Tech',
+                              groupValue: ref.watch(filterProvider),
+                              onChanged: (value) {
+                                setState(() {
+                                  ref.read(filterProvider.notifier).state =
+                                      value.toString();
+                                  ref.read(isFilteredProvider.notifier).state =
+                                      true;
+                                });
+                              },
+                            ),
+                          ),
+                          ListTile(
+                            title: const Text(
+                              'Personal',
+                              style: bodyStyle,
+                            ),
+                            leading: Radio(
+                              activeColor: colour,
+                              value: 'Personal',
+                              groupValue: ref.watch(filterProvider),
+                              onChanged: (value) {
+                                setState(() {
+                                  ref.read(filterProvider.notifier).state =
+                                      value.toString();
+                                  ref.read(isFilteredProvider.notifier).state =
+                                      true;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        'Go',
+                        style: bodyStyle,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
           IconButton(
             icon: const Icon(
               Icons.person,

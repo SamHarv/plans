@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:beamer/beamer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -20,6 +22,8 @@ class _ReorderableTasksWidgetState
     extends ConsumerState<ReorderableTasksWidget> {
   late FirestoreService db;
   late List<Task> tasks;
+  late String filter;
+  late bool isFiltered;
 
   @override
   void initState() {
@@ -27,8 +31,10 @@ class _ReorderableTasksWidgetState
 
     db = ref.read(database);
     tasks = ref.read(tasksProvider);
+    filter = ref.read(filterProvider);
+    isFiltered = ref.read(isFilteredProvider);
 
-    // Get tasks and map them to list for implementation in reorderable list
+    // get tasks by filter
     db.getTasks().listen((snapshot) {
       if (snapshot.docs.isNotEmpty) {
         tasks = snapshot.docs.map((doc) {
@@ -42,6 +48,21 @@ class _ReorderableTasksWidgetState
         }).toList();
       }
     });
+
+    // Get tasks and map them to list for implementation in reorderable list
+    // db.getTasks().listen((snapshot) {
+    //   if (snapshot.docs.isNotEmpty) {
+    //     tasks = snapshot.docs.map((doc) {
+    //       return Task(
+    //         taskID: doc['taskID'],
+    //         taskColour: db.getColourFromString(doc['taskColour']),
+    //         taskHeading: doc['taskHeading'],
+    //         taskContents: doc['taskContents'],
+    //         taskTag: doc['taskTag'],
+    //       );
+    //     }).toList();
+    //   }
+    // });
   }
 
   // Update order of tasks
@@ -65,9 +86,17 @@ class _ReorderableTasksWidgetState
   Widget build(BuildContext context) {
     // Listen to task changes
     return StreamBuilder<QuerySnapshot>(
-      stream: db.getTasks(),
+      stream: db.getFilteredTasks(
+          ref.watch(filterProvider), ref.watch(isFilteredProvider)),
       builder: (context, snapshot) {
-        if (snapshot.hasData && snapshot.data != null) {
+        if (snapshot.hasError) {
+          // print('An error occurred: ${snapshot.error}');
+          return Center(
+            child: Text('An error occurred: ${snapshot.error}'),
+          );
+        }
+
+        if (snapshot.data!.docs.isNotEmpty && snapshot.data != null) {
           final tasksFromSnapshot = snapshot.data!.docs.map((doc) {
             return Task(
               taskID: doc['taskID'],

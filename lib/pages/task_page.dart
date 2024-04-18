@@ -46,193 +46,254 @@ class _TaskPageState extends ConsumerState<TaskPage> {
         }
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: appTitle,
-          backgroundColor: widget.task.taskColour,
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              if (headingController.text != "") {
-                widget.task.taskHeading = headingController.text;
-                widget.task.taskContents = bodyController.text;
-                db.updateTask(widget.task.taskID, widget.task);
-                Beamer.of(context).beamToNamed('/home');
-              } else if (headingController.text == "") {
-                showDialog(
-                  context: context,
-                  builder: (context) =>
-                      ExitWithoutSavingWidget(db: db, task: widget.task),
-                );
-              }
-            },
-          ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.undo, color: Colors.white),
-              onPressed: () => bodyUndoController.undo(),
-            ),
-            IconButton(
-              icon: const Icon(Icons.redo, color: Colors.white),
-              onPressed: () => bodyUndoController.redo(),
-            ),
-            IconButton(
-              icon: const Icon(Icons.color_lens, color: Colors.white),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => CustomDialogWidget(
-                    dialogHeading: 'Pick a Colour',
-                    dialogContent: GestureDetector(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              PaletteColourWidget(
-                                  paletteColour: blue, task: widget.task),
-                              PaletteColourWidget(
-                                  paletteColour: red, task: widget.task),
-                              PaletteColourWidget(
-                                  paletteColour: green, task: widget.task),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              PaletteColourWidget(
-                                  paletteColour: blueGrey, task: widget.task),
-                              PaletteColourWidget(
-                                  paletteColour: yellow, task: widget.task),
-                              PaletteColourWidget(
-                                  paletteColour: orange, task: widget.task),
-                              PaletteColourWidget(
-                                  paletteColour: colour, task: widget.task)
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              PaletteColourWidget(
-                                  paletteColour: brown, task: widget.task),
-                              PaletteColourWidget(
-                                  paletteColour: pink, task: widget.task),
-                              PaletteColourWidget(
-                                  paletteColour: black, task: widget.task),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    dialogActions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text(
-                          'Cancel',
-                          style: bodyStyle,
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            widget.task.taskColour = widget.task.taskColour;
-                            db.updateTask(widget.taskID, widget.task);
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: const Text(
-                          'Go',
-                          style: bodyStyle,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-            IconButton(
+          appBar: AppBar(
+            title: appTitle,
+            backgroundColor: widget.task.taskColour,
+            leading: IconButton(
               icon: const Icon(
-                Icons.delete,
+                Icons.arrow_back,
                 color: Colors.white,
               ),
               onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) =>
-                      ConfirmDeleteWidget(db: db, task: widget.task),
-                );
+                if (headingController.text != "") {
+                  widget.task.taskHeading = headingController.text;
+                  widget.task.taskContents = bodyController.text;
+                  db.updateTask(widget.task.taskID, widget.task);
+                  Beamer.of(context).beamToNamed('/home');
+                } else if (headingController.text == "") {
+                  showDialog(
+                    context: context,
+                    builder: (context) =>
+                        ExitWithoutSavingWidget(db: db, task: widget.task),
+                  );
+                }
               },
             ),
-          ],
-        ),
-        backgroundColor: widget.task.taskColour,
-        body: Padding(
-          padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
-          child: Column(
-            children: [
-              const SizedBox(height: 16),
-              Align(
-                alignment: Alignment.topLeft,
-                child: CustomTextFieldWidget(
-                  undoController: headingUndoController,
-                  onUpdate: (text) {
-                    widget.task.taskHeading = text;
-                    db.updateTask(widget.taskID, widget.task);
-                  },
-                  controller: headingController,
-                  hintText: "Click here to add heading",
-                  maxLines: 1,
-                  fontSize: 24,
-                  style: headingStyle,
-                ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.undo, color: Colors.white),
+                onPressed: () => bodyUndoController.undo(),
               ),
-              const Divider(),
-              // Content field
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: CustomTextFieldWidget(
-                      undoController: bodyUndoController,
-                      onUpdate: (text) {
-                        // Add dot point by entering '.. '
-                        if (text.length > 2 &&
-                            (text.substring(text.length - 3, text.length) ==
-                                '.. ')) {
-                          bodyController.text =
-                              '${text.substring(0, text.length - 3)}• ';
-                        }
-                        // If last paragraph/ item starts with a dot, add another
-                        // on a new line when \n is entered
-                        List textList = text.split('\n');
-                        if (textList.length > 1 &&
-                            text.substring(text.length - 1, text.length) ==
-                                '\n' &&
-                            textList[textList.length - 2][0] == '•' &&
-                            textList[textList.length - 2] != '• ') {
-                          bodyController.text = '$text• ';
-                        }
-                        // Constantly save
-                        widget.task.taskContents = text;
-                        db.updateTask(widget.taskID, widget.task);
-                      },
-                      controller: bodyController,
-                      hintText: "Click here to add notes",
-                      maxLines: null,
-                      fontSize: 18,
-                      style: bodyStyle,
+              IconButton(
+                icon: const Icon(Icons.redo, color: Colors.white),
+                onPressed: () => bodyUndoController.redo(),
+              ),
+              IconButton(
+                icon: const Icon(Icons.color_lens, color: Colors.white),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => CustomDialogWidget(
+                      dialogHeading: 'Pick a Colour',
+                      dialogContent: StatefulBuilder(
+                        builder: (context, setState) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  PaletteColourWidget(
+                                    paletteColour: blue,
+                                    task: widget.task,
+                                  ),
+                                  PaletteColourWidget(
+                                    paletteColour: red,
+                                    task: widget.task,
+                                  ),
+                                  PaletteColourWidget(
+                                    paletteColour: green,
+                                    task: widget.task,
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  PaletteColourWidget(
+                                    paletteColour: blueGrey,
+                                    task: widget.task,
+                                  ),
+                                  PaletteColourWidget(
+                                    paletteColour: yellow,
+                                    task: widget.task,
+                                  ),
+                                  PaletteColourWidget(
+                                    paletteColour: orange,
+                                    task: widget.task,
+                                  ),
+                                  PaletteColourWidget(
+                                    paletteColour: colour,
+                                    task: widget.task,
+                                  )
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  PaletteColourWidget(
+                                    paletteColour: brown,
+                                    task: widget.task,
+                                  ),
+                                  PaletteColourWidget(
+                                    paletteColour: pink,
+                                    task: widget.task,
+                                  ),
+                                  PaletteColourWidget(
+                                    paletteColour: black,
+                                    task: widget.task,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                      dialogActions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text(
+                            'Cancel',
+                            style: bodyStyle,
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              widget.task.taskColour = widget.task.taskColour;
+                              db.updateTask(widget.taskID, widget.task);
+                            });
+                            Navigator.pop(context);
+                          },
+                          child: const Text(
+                            'Go',
+                            style: bodyStyle,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
+                  );
+                },
+              ),
+              IconButton(
+                icon: const Icon(
+                  Icons.delete,
+                  color: Colors.white,
                 ),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) =>
+                        ConfirmDeleteWidget(db: db, task: widget.task),
+                  );
+                },
               ),
             ],
           ),
-        ),
-      ),
+          backgroundColor: widget.task.taskColour,
+          body: Padding(
+            padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+            child: Column(
+              children: [
+                const SizedBox(height: 16),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: CustomTextFieldWidget(
+                    undoController: headingUndoController,
+                    onUpdate: (text) {
+                      widget.task.taskHeading = text;
+                      db.updateTask(widget.taskID, widget.task);
+                    },
+                    controller: headingController,
+                    hintText: "Click here to add heading",
+                    maxLines: 1,
+                    fontSize: 24,
+                    style: headingStyle,
+                  ),
+                ),
+                const Divider(),
+                // Content field
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: CustomTextFieldWidget(
+                        undoController: bodyUndoController,
+                        onUpdate: (text) {
+                          // Add dot point by entering '.. '
+                          if (text.length > 2 &&
+                              (text.substring(text.length - 3, text.length) ==
+                                  '.. ')) {
+                            bodyController.text =
+                                '${text.substring(0, text.length - 3)}• ';
+                          }
+                          // If last paragraph/ item starts with a dot, add another
+                          // on a new line when \n is entered
+                          List textList = text.split('\n');
+                          if (textList.length > 1 &&
+                              text.substring(text.length - 1, text.length) ==
+                                  '\n' &&
+                              textList[textList.length - 2][0] == '•' &&
+                              textList[textList.length - 2] != '• ') {
+                            bodyController.text = '$text• ';
+                          }
+                          // Constantly save
+                          widget.task.taskContents = text;
+                          db.updateTask(widget.taskID, widget.task);
+                        },
+                        controller: bodyController,
+                        hintText: "Click here to add notes",
+                        maxLines: null,
+                        fontSize: 18,
+                        style: bodyStyle,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: Colors.white,
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => CustomDialogWidget(
+                  dialogHeading: "Add Tag",
+                  dialogContent: CustomTextFieldWidget(
+                    undoController: UndoHistoryController(),
+                    onUpdate: (text) {
+                      widget.task.taskTag = text;
+                      db.updateTask(widget.taskID, widget.task);
+                    },
+                    controller: TextEditingController(),
+                    hintText: widget.task.taskTag == ""
+                        ? "Add Tag"
+                        : widget.task.taskTag,
+                    maxLines: 1,
+                    fontSize: 18,
+                    style: bodyStyle,
+                  ),
+                  dialogActions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        'Go',
+                        style: bodyStyle,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+            child: const Icon(
+              Icons.sell,
+              color: colour,
+            ),
+          )),
     );
   }
 }

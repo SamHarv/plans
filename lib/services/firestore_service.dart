@@ -49,6 +49,24 @@ class FirestoreService {
         .snapshots();
   }
 
+  // Get tasks by filter for current user
+  Stream<QuerySnapshot> getFilteredTasks(String filter, bool isFiltered) {
+    if (!isFiltered) {
+      return users
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .collection('tasks')
+          .orderBy('timestamp', descending: true)
+          .snapshots();
+    } else {
+      return users
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .collection('tasks')
+          .where('taskTag', isEqualTo: filter)
+          .orderBy('timestamp', descending: true)
+          .snapshots();
+    }
+  }
+
   // Get single task by taskID
   Future<Task> getTask(String taskID) async {
     final task = await users
