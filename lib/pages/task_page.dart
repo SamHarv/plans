@@ -58,6 +58,7 @@ class _TaskPageState extends ConsumerState<TaskPage> {
                 if (headingController.text != "") {
                   widget.task.taskHeading = headingController.text;
                   widget.task.taskContents = bodyController.text;
+                  widget.task.taskColour = widget.task.taskColour;
                   db.updateTask(widget.task.taskID, widget.task);
                   Beamer.of(context).beamToNamed('/home');
                 } else if (headingController.text == "") {
@@ -83,11 +84,11 @@ class _TaskPageState extends ConsumerState<TaskPage> {
                 onPressed: () {
                   showDialog(
                     context: context,
-                    builder: (context) => CustomDialogWidget(
-                      dialogHeading: 'Pick a Colour',
-                      dialogContent: StatefulBuilder(
-                        builder: (context, setState) {
-                          return Column(
+                    builder: (context) => StatefulBuilder(
+                      builder: (context, state) {
+                        return CustomDialogWidget(
+                          dialogHeading: 'Pick a Colour',
+                          dialogContent: Column(
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -147,33 +148,36 @@ class _TaskPageState extends ConsumerState<TaskPage> {
                                 ],
                               ),
                             ],
-                          );
-                        },
-                      ),
-                      dialogActions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text(
-                            'Cancel',
-                            style: bodyStyle,
                           ),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            setState(() {
-                              widget.task.taskColour = widget.task.taskColour;
-                              db.updateTask(widget.taskID, widget.task);
-                            });
-                            Navigator.pop(context);
-                          },
-                          child: const Text(
-                            'Go',
-                            style: bodyStyle,
-                          ),
-                        ),
-                      ],
+                          dialogActions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text(
+                                'Cancel',
+                                style: bodyStyle,
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  widget.task.taskColour =
+                                      widget.task.taskColour;
+                                });
+                                db.updateTask(widget.taskID, widget.task);
+
+                                Navigator.pop(context);
+                              },
+                              child: const Text(
+                                'Go',
+                                style: bodyStyle,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
                     ),
                   );
+                  setState(() {});
                 },
               ),
               IconButton(
@@ -202,8 +206,8 @@ class _TaskPageState extends ConsumerState<TaskPage> {
                   child: CustomTextFieldWidget(
                     undoController: headingUndoController,
                     onUpdate: (text) {
-                      widget.task.taskHeading = text;
-                      db.updateTask(widget.taskID, widget.task);
+                      // widget.task.taskHeading = text;
+                      // db.updateTask(widget.taskID, widget.task);
                     },
                     controller: headingController,
                     hintText: "Click here to add heading",
@@ -239,8 +243,8 @@ class _TaskPageState extends ConsumerState<TaskPage> {
                             bodyController.text = '$text• ';
                           }
                           // Constantly save
-                          widget.task.taskContents = text;
-                          db.updateTask(widget.taskID, widget.task);
+                          // widget.task.taskContents = text;
+                          // db.updateTask(widget.taskID, widget.task);
                         },
                         controller: bodyController,
                         hintText: "Click here to add notes",

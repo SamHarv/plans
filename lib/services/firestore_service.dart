@@ -25,7 +25,7 @@ class FirestoreService {
         .set({
       'userID': FirebaseAuth.instance.currentUser?.uid,
       'taskID': task.taskID,
-      'taskColour': task.taskColour.toString(),
+      'taskColour': getStringFromColour(task.taskColour),
       'taskHeading': task.taskHeading,
       'taskContents': task.taskContents,
       'taskTag': task.taskTag,
@@ -83,6 +83,30 @@ class FirestoreService {
     );
   }
 
+  String getStringFromColour(Color colour) {
+    if (colour == blue) {
+      return "Color(0xff014c63)";
+    } else if (colour == red) {
+      return "Color(0xff890000)";
+    } else if (colour == yellow) {
+      return "Color(0xffba9600)";
+    } else if (colour == green) {
+      return "Color(0xff3b5828)";
+    } else if (colour == orange) {
+      return "Color(0xffae3d00)";
+    } else if (colour == blueGrey) {
+      return "Color(0xff607d8b)";
+    } else if (colour == brown) {
+      return "Color(0xff4e4544)";
+    } else if (colour == pink) {
+      return "Color(0xff7f7384)";
+    } else if (colour == black) {
+      return "Color(0xff101820)";
+    } else {
+      return "Color(0xff374854)";
+    }
+  }
+
   // Get colour from String
   Color getColourFromString(String colourString) {
     const String blueString = "Color(0xff014c63)";
@@ -127,7 +151,7 @@ class FirestoreService {
         .doc(taskID)
         .update({
       'taskID': taskID,
-      'taskColour': newTask.taskColour.toString(),
+      'taskColour': getStringFromColour(newTask.taskColour),
       'taskHeading': newTask.taskHeading,
       'taskContents': newTask.taskContents,
       'taskTag': newTask.taskTag,
