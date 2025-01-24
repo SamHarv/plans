@@ -28,7 +28,7 @@ class _ForgotPasswordPageWidgetState extends ConsumerState<ForgotPasswordPage> {
   final _passwordController = TextEditingController();
 
   // Send email to reset password
-  void resetPassword() async {
+  Future resetPassword() async {
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(
         email: _emailController.text.trim(),
@@ -115,11 +115,11 @@ class _ForgotPasswordPageWidgetState extends ConsumerState<ForgotPasswordPage> {
                     height: 60,
                     child: ElevatedButton(
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
+                        backgroundColor: WidgetStateProperty.all<Color>(
                           Colors.white,
                         ),
                       ),
-                      onPressed: () {
+                      onPressed: () async {
                         showDialog(
                           context: context,
                           barrierDismissible: false,
@@ -131,11 +131,11 @@ class _ForgotPasswordPageWidgetState extends ConsumerState<ForgotPasswordPage> {
                             );
                           },
                         );
-                        resetPassword();
-                        Future.delayed(const Duration(seconds: 2), () {
-                          Navigator.pop(context);
-                          Beamer.of(context).beamToNamed('/home');
-                        });
+                        await resetPassword();
+                        // ignore: use_build_context_synchronously
+                        Navigator.pop(context);
+                        // ignore: use_build_context_synchronously
+                        Beamer.of(context).beamToNamed('/sign-in');
                       },
                       child: const Text(
                         'Go',

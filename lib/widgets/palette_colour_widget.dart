@@ -22,14 +22,14 @@ class PaletteColourWidget extends ConsumerStatefulWidget {
 class _PaletteColourWidgetState extends ConsumerState<PaletteColourWidget> {
   @override
   Widget build(BuildContext context) {
-    final db = ref.read(database);
+    final db = ref.read(database.notifier).state;
 
     return InkWell(
       borderRadius: BorderRadius.circular(50),
       onTap: () {
         setState(() {
-          db.updateTask(widget.task.taskID, widget.task);
           widget.task.taskColour = widget.paletteColour;
+          db.updateTask(widget.task.taskID, widget.task);
         });
       },
       child: Padding(

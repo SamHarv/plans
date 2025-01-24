@@ -1,4 +1,5 @@
 import 'package:beamer/beamer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'models/task_model.dart';
@@ -8,9 +9,11 @@ import 'pages/sign_in_page.dart';
 import 'pages/home_page.dart';
 import 'pages/task_page.dart';
 
+final User? user = FirebaseAuth.instance.currentUser;
+
 final routerDelegate = BeamerDelegate(
-  notFoundRedirectNamed: '/home',
-  initialPath: '/home',
+  notFoundRedirectNamed: user == null ? '/sign-in' : '/home',
+  initialPath: user == null ? '/sign-in' : '/home',
   locationBuilder: RoutesLocationBuilder(
     routes: {
       '/home': (context, state, data) {
@@ -54,5 +57,5 @@ final routerDelegate = BeamerDelegate(
         );
       },
     },
-  ),
+  ).call,
 );

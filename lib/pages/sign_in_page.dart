@@ -129,7 +129,7 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                           height: 60,
                           child: ElevatedButton(
                             style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
+                              backgroundColor: WidgetStateProperty.all<Color>(
                                 Colors.white,
                               ),
                             ),
@@ -151,43 +151,45 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                           onPressed: () {
                             // delete account
                             showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    backgroundColor: colour,
-                                    title: const Text(
-                                      'Are you sure you want to delete your account?',
-                                      style: TextStyle(
-                                        color: Colors.white,
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  backgroundColor: colour,
+                                  title: const Text(
+                                    'Are you sure you want to delete your account?',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text(
+                                        'Cancel',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        ),
                                       ),
                                     ),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: const Text(
-                                          'Cancel',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                          ),
+                                    TextButton(
+                                      onPressed: () async {
+                                        await deleteAccount();
+                                        // ignore: use_build_context_synchronously
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text(
+                                        'Delete',
+                                        style: TextStyle(
+                                          color: Colors.white,
                                         ),
                                       ),
-                                      TextButton(
-                                        onPressed: () {
-                                          deleteAccount();
-                                          Navigator.pop(context);
-                                        },
-                                        child: const Text(
-                                          'Delete',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                });
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
                           },
                           child: const Text(
                             'Delete Account',
@@ -230,11 +232,11 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                           height: 60,
                           child: ElevatedButton(
                             style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
+                              backgroundColor: WidgetStateProperty.all<Color>(
                                 Colors.white,
                               ),
                             ),
-                            onPressed: () {
+                            onPressed: () async {
                               showDialog(
                                 context: context,
                                 barrierDismissible: false,
@@ -246,14 +248,11 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                                   );
                                 },
                               );
-                              signIn();
-                              Future.delayed(
-                                const Duration(seconds: 2),
-                                () {
-                                  Navigator.pop(context);
-                                  Beamer.of(context).beamToNamed('/home');
-                                },
-                              );
+                              await signIn();
+                              // ignore: use_build_context_synchronously
+                              Navigator.pop(context);
+                              // ignore: use_build_context_synchronously
+                              Beamer.of(context).beamToNamed('/home');
                             },
                             child: const Text(
                               'Go',

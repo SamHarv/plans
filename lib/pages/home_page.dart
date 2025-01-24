@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:beamer/beamer.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -29,12 +28,12 @@ class HomePage extends ConsumerStatefulWidget {
 class _HomePageState extends ConsumerState<HomePage> {
   @override
   void initState() {
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (user == null) {
-        // ignore: use_build_context_synchronously
-        Beamer.of(context).beamToNamed('/sign-in');
-      }
-    });
+    // FirebaseAuth.instance.authStateChanges().listen((User? user) {
+    //   if (user == null) {
+    //     // ignore: use_build_context_synchronously
+    //     Beamer.of(context).beamToNamed('/sign-in');
+    //   }
+    // });
     super.initState();
   }
 
@@ -64,102 +63,6 @@ class _HomePageState extends ConsumerState<HomePage> {
         automaticallyImplyLeading: false,
         backgroundColor: colour,
         actions: [
-          // IconButton(
-          //   icon: const Icon(
-          //     Icons.filter_list_alt,
-          //     color: Colors.white,
-          //   ),
-          //   onPressed: () {
-          //     // Dialog to add filter
-          //     showDialog(
-          //       context: context,
-          //       builder: (context) => AlertDialog(
-          //         title: const Text(
-          //           'Filter Tasks',
-          //           style: headingStyle,
-          //         ),
-          //         backgroundColor: Colors.black,
-          //         content: StatefulBuilder(
-          //           builder: (BuildContext context, StateSetter setState) {
-          //             return Column(
-          //               mainAxisSize: MainAxisSize.min,
-          //               children: [
-          //                 ListTile(
-          //                   title: const Text(
-          //                     'All',
-          //                     style: bodyStyle,
-          //                   ),
-          //                   leading: Radio(
-          //                     activeColor: colour,
-          //                     value: '',
-          //                     groupValue: ref.watch(filterProvider),
-          //                     onChanged: (value) {
-          //                       setState(() {
-          //                         ref.read(filterProvider.notifier).state =
-          //                             value.toString();
-          //                         ref.read(isFilteredProvider.notifier).state =
-          //                             false;
-          //                       });
-          //                     },
-          //                   ),
-          //                 ),
-          //                 ListTile(
-          //                   title: const Text(
-          //                     'O2Tech',
-          //                     style: bodyStyle,
-          //                   ),
-          //                   leading: Radio(
-          //                     activeColor: colour,
-          //                     value: 'O2Tech',
-          //                     groupValue: ref.watch(filterProvider),
-          //                     onChanged: (value) {
-          //                       setState(() {
-          //                         ref.read(filterProvider.notifier).state =
-          //                             value.toString();
-          //                         ref.read(isFilteredProvider.notifier).state =
-          //                             true;
-          //                       });
-          //                     },
-          //                   ),
-          //                 ),
-          //                 ListTile(
-          //                   title: const Text(
-          //                     'Personal',
-          //                     style: bodyStyle,
-          //                   ),
-          //                   leading: Radio(
-          //                     activeColor: colour,
-          //                     value: 'Personal',
-          //                     groupValue: ref.watch(filterProvider),
-          //                     onChanged: (value) {
-          //                       setState(() {
-          //                         ref.read(filterProvider.notifier).state =
-          //                             value.toString();
-          //                         ref.read(isFilteredProvider.notifier).state =
-          //                             true;
-          //                       });
-          //                     },
-          //                   ),
-          //                 ),
-          //               ],
-          //             );
-          //           },
-          //         ),
-          //         actions: [
-          //           TextButton(
-          //             onPressed: () {
-          //               Navigator.pop(context);
-          //             },
-          //             child: const Text(
-          //               'Go',
-          //               style: bodyStyle,
-          //             ),
-          //           ),
-          //         ],
-          //       ),
-          //     );
-          //   },
-          // ),
           IconButton(
             icon: const Icon(
               Icons.person,
@@ -197,54 +100,6 @@ class _HomePageState extends ConsumerState<HomePage> {
           );
           db.addTask(task: newTask);
           Beamer.of(context).beamToNamed('/task-page', data: newTask);
-          // showDialog(
-          //   context: context,
-          //   builder: (context) => CustomDialogWidget(
-          //     dialogHeading: "Select Task Type",
-          //     dialogActions: [
-          //       TextButton(
-          //         onPressed: () {
-          //           Navigator.pop(context);
-          //         },
-          //         child: const Text(
-          //           'Cancel',
-          //           style: bodyStyle,
-          //         ),
-          //       ),
-          //       TextButton(
-          //         onPressed: () {
-          //           final newTask = Task(
-          //             taskColour: colour,
-          //             taskID: generateTaskID(),
-          //           );
-          //           db.addTask(task: newTask);
-          //           Beamer.of(context)
-          //               .beamToNamed('/task-page', data: newTask);
-          //         },
-          //         child: const Text(
-          //           'Note',
-          //           style: bodyStyle,
-          //         ),
-          //       ),
-          //       TextButton(
-          //         onPressed: () {
-          //           // TODO: Create new checklist
-          //           // final newTask = Task(
-          //           //   taskColour: colour,
-          //           //   taskID: generateTaskID(),
-          //           // );
-          //           // db.addTask(task: newTask);
-          //           // Beamer.of(context)
-          //           //     .beamToNamed('/task-page', data: newTask);
-          //         },
-          //         child: const Text(
-          //           'Checklist',
-          //           style: bodyStyle,
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // );
         },
         child: const Icon(
           Icons.add,

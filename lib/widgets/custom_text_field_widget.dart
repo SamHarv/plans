@@ -11,7 +11,7 @@ class CustomTextFieldWidget extends StatelessWidget {
   final UndoHistoryController undoController;
 
   const CustomTextFieldWidget({
-    Key? key,
+    super.key,
     required this.controller,
     required this.hintText,
     required this.maxLines,
@@ -20,7 +20,7 @@ class CustomTextFieldWidget extends StatelessWidget {
     required this.onUpdate,
     required this.undoController,
     this.height,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

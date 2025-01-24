@@ -121,11 +121,11 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                 height: 60,
                 child: ElevatedButton(
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
+                    backgroundColor: WidgetStateProperty.all<Color>(
                       Colors.white,
                     ),
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     showDialog(
                       context: context,
                       barrierDismissible: false,
@@ -137,14 +137,12 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                         );
                       },
                     );
-                    signUp(db);
-                    Future.delayed(
-                      const Duration(seconds: 2),
-                      () {
-                        Navigator.pop(context);
-                        Beamer.of(context).beamToNamed('/home');
-                      },
-                    );
+                    await signUp(db);
+
+                    // ignore: use_build_context_synchronously
+                    Navigator.pop(context);
+                    // ignore: use_build_context_synchronously
+                    Beamer.of(context).beamToNamed('/home');
                   },
                   child: const Text(
                     'Go',

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:beamer/beamer.dart';
@@ -48,36 +49,37 @@ class _ReorderableTasksWidgetState
         }).toList();
       }
     });
-
-    // Get tasks and map them to list for implementation in reorderable list
-    // db.getTasks().listen((snapshot) {
-    //   if (snapshot.docs.isNotEmpty) {
-    //     tasks = snapshot.docs.map((doc) {
-    //       return Task(
-    //         taskID: doc['taskID'],
-    //         taskColour: db.getColourFromString(doc['taskColour']),
-    //         taskHeading: doc['taskHeading'],
-    //         taskContents: doc['taskContents'],
-    //         taskTag: doc['taskTag'],
-    //       );
-    //     }).toList();
-    //   }
-    // });
   }
 
   // Update order of tasks
   Future<void> updateOrder(int oldIndex, int newIndex) async {
+    // if (oldIndex < newIndex) {
+    //   newIndex -= 1;
+    // }
+    // tasks.insert(newIndex, tasks.removeAt(oldIndex));
+    // // Reverse list to update timestamp in correct order
+    // tasks = tasks.reversed.toList();
+    // final batch = FirebaseFirestore.instance.batch();
+    // // Using indexed numerical key rather than actual time to update timestamp
+    // // for improved efficiency
+    // for (int i = 0; i < tasks.length; i++) {
+    //   batch.update(db.tasks.doc(tasks[i].taskID), {'timestamp': i});
+    // }
+    // await batch.commit();
+
     if (oldIndex < newIndex) {
       newIndex -= 1;
     }
-    tasks.insert(newIndex, tasks.removeAt(oldIndex));
-    // Reverse list to update timestamp in correct order
-    tasks = tasks.reversed.toList();
+    final movedTask = tasks.removeAt(oldIndex);
+    tasks.insert(newIndex, movedTask);
+
     final batch = FirebaseFirestore.instance.batch();
-    // Using indexed numerical key rather than actual time to update timestamp
-    // for improved efficiency
-    for (int i = 0; i < tasks.length; i++) {
-      batch.update(db.tasks.doc(tasks[i].taskID), {'timestamp': i});
+    final start = min(oldIndex, newIndex);
+    final end = max(oldIndex, newIndex);
+
+    for (int i = start; i <= end; i++) {
+      batch.update(
+          db.tasks.doc(tasks[i].taskID), {'timestamp': tasks.length - 1 - i});
     }
     await batch.commit();
   }
@@ -93,6 +95,32 @@ class _ReorderableTasksWidgetState
           // print('An error occurred: ${snapshot.error}');
           return Center(
             child: Text('An error occurred: ${snapshot.error}'),
+          );
+        }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(
+              color: Colors.white,
+            ),
+          );
+        }
+        if (snapshot.data!.docs.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Text(
+                    'No entries found!\n\n'
+                    'Add a new task by tapping the + button below.',
+                    style: headingStyle,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                // Image.asset('images/arrow.png'),
+              ],
+            ),
           );
         }
 
@@ -155,6 +183,7 @@ class _ReorderableTasksWidgetState
             );
           }).toList();
           return ReorderableListView(
+            // buildDefaultDragHandles: false,
             // Make task edges rounded when highlighted
             proxyDecorator: (child, index, animation) => Material(
               borderRadius: BorderRadius.circular(64),
