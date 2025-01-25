@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '/constants.dart';
+import '../../config/constants.dart';
 
 class CustomDialogWidget extends ConsumerWidget {
   final String dialogHeading;
@@ -9,11 +9,12 @@ class CustomDialogWidget extends ConsumerWidget {
   final Widget? dialogContent;
   final List<Widget> dialogActions;
 
-  const CustomDialogWidget(
-      {super.key,
-      required this.dialogHeading,
-      this.dialogContent,
-      required this.dialogActions});
+  const CustomDialogWidget({
+    super.key,
+    required this.dialogHeading,
+    this.dialogContent,
+    required this.dialogActions,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

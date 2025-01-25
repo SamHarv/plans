@@ -1,16 +1,19 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
-import '/services/firestore_service.dart';
-import '/constants.dart';
-import '/models/task_model.dart';
+import '../../data/repos/firestore_service.dart';
+import '../../config/constants.dart';
+import '../../data/models/task_model.dart';
 import 'custom_dialog_widget.dart';
 
 class ExitWithoutSavingWidget extends StatelessWidget {
   final FirestoreService db;
   final Task task;
-  const ExitWithoutSavingWidget(
-      {super.key, required this.db, required this.task});
+  const ExitWithoutSavingWidget({
+    super.key,
+    required this.db,
+    required this.task,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +26,7 @@ class ExitWithoutSavingWidget extends StatelessWidget {
       ),
       dialogActions: [
         TextButton(
-          onPressed: () {
-            // Stay on Task
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context), // stay on task
           child: const Text(
             'Cancel',
             style: bodyStyle,

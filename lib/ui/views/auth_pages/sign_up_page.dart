@@ -2,20 +2,12 @@ import 'package:beamer/beamer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-import '/services/firestore_service.dart';
-import '/widgets/login_field_widget.dart';
-import '/constants.dart';
-import '/state_management/riverpod_providers.dart';
-
-final _url = Uri.parse('https://oxygentech.com.au');
-
-Future<void> _launchUrl() async {
-  if (!await launchUrl(_url)) {
-    throw 'Could not launch $_url';
-  }
-}
+import '../../../data/repos/firestore_service.dart';
+import '../../widgets/login_field_widget.dart';
+import '../../widgets/o2_tech_icon.dart';
+import '../../../config/constants.dart';
+import '../../../logic/providers/riverpod_providers.dart';
 
 class SignUpPage extends ConsumerStatefulWidget {
   const SignUpPage({super.key});
@@ -70,7 +62,8 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     final db = ref.read(database);
-    final mediaWidth = MediaQuery.of(context).size.width;
+    final authentication = ref.read(auth);
+    final mediaWidth = MediaQuery.sizeOf(context).width;
     return Scaffold(
       backgroundColor: colour,
       appBar: AppBar(
@@ -78,18 +71,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
         backgroundColor: colour,
         automaticallyImplyLeading: false,
         actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-            child: InkWell(
-              child: Image.asset(
-                'images/2.png',
-                fit: BoxFit.contain,
-                height: 24.0,
-              ),
-              onTap: () => _launchUrl(),
-            ),
-          ),
-          const SizedBox(width: 8),
+          O2TechIcon(),
         ],
       ),
       body: Center(
@@ -122,7 +104,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                 child: ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor: WidgetStateProperty.all<Color>(
-                      Colors.white,
+                      secondaryColour,
                     ),
                   ),
                   onPressed: () async {
@@ -132,17 +114,35 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                       builder: (BuildContext context) {
                         return const Center(
                           child: CircularProgressIndicator(
-                            color: Colors.white,
+                            color: secondaryColour,
                           ),
                         );
                       },
                     );
-                    await signUp(db);
-
-                    // ignore: use_build_context_synchronously
-                    Navigator.pop(context);
-                    // ignore: use_build_context_synchronously
-                    Beamer.of(context).beamToNamed('/home');
+                    try {
+                      await authentication.signUp(
+                        db,
+                        _emailController.text.trim(),
+                        _passwordController.text.trim(),
+                      );
+                      // ignore: use_build_context_synchronously
+                      Navigator.pop(context);
+                      // ignore: use_build_context_synchronously
+                      Beamer.of(context).beamToNamed('/home');
+                    } catch (e) {
+                      showMessage(e.toString());
+                      Future.delayed(
+                        const Duration(milliseconds: 3000),
+                        () {
+                          // Pop dialog
+                          // ignore: use_build_context_synchronously
+                          Navigator.pop(context);
+                          // Pop progress indicator
+                          // ignore: use_build_context_synchronously
+                          Navigator.pop(context);
+                        },
+                      );
+                    }
                   },
                   child: const Text(
                     'Go',
@@ -162,13 +162,11 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                 child: const Text(
                   'Sign In',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: secondaryColour,
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 80,
-              ),
+              gapH80,
             ],
           ),
         ),

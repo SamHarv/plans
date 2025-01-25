@@ -2,18 +2,11 @@ import 'package:beamer/beamer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-import '/widgets/login_field_widget.dart';
-import '/constants.dart';
-
-final _url = Uri.parse('https://oxygentech.com.au');
-
-Future<void> _launchUrl() async {
-  if (!await launchUrl(_url)) {
-    throw 'Could not launch $_url';
-  }
-}
+import '../../../logic/providers/riverpod_providers.dart';
+import '../../widgets/login_field_widget.dart';
+import '../..//widgets/o2_tech_icon.dart';
+import '../../../config/constants.dart';
 
 class SignInPage extends ConsumerStatefulWidget {
   const SignInPage({super.key});
@@ -26,43 +19,6 @@ class _SignInPageState extends ConsumerState<SignInPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  Future signIn() async {
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-      );
-    } on FirebaseAuthException catch (e) {
-      showMessage(e.toString());
-    }
-  }
-
-  // delete account
-  Future<void> deleteAccount() async {
-    try {
-      await FirebaseAuth.instance.currentUser?.delete();
-    } on FirebaseAuthException catch (e) {
-      showMessage(e.toString());
-    }
-  }
-
-  void showMessage(String message) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: colour,
-          title: Center(
-            child: Text(
-              message,
-              style: const TextStyle(color: Colors.white),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   @override
   void dispose() {
     _emailController.dispose();
@@ -72,11 +28,12 @@ class _SignInPageState extends ConsumerState<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
-    final mediaWidth = MediaQuery.of(context).size.width;
+    final mediaWidth = MediaQuery.sizeOf(context).width;
+    final authentication = ref.read(auth);
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
-        final bool userLoggedIn = snapshot.hasData;
+        final userLoggedIn = snapshot.hasData;
         return Scaffold(
           backgroundColor: colour,
           appBar: AppBar(
@@ -89,25 +46,11 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                       Icons.arrow_back,
                       color: Colors.white,
                     ),
-                    onPressed: () {
-                      Beamer.of(context).beamToNamed('/home');
-                    },
+                    onPressed: () => Beamer.of(context).beamToNamed('/home'),
                   )
                 : null,
             actions: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-                child: InkWell(
-                  child: Image.asset(
-                    // O2Tech logo => navigate to webpage
-                    'images/2.png',
-                    fit: BoxFit.contain,
-                    height: 24.0,
-                  ),
-                  onTap: () => _launchUrl(),
-                ),
-              ),
-              const SizedBox(width: 8),
+              O2TechIcon(),
             ],
           ),
           body: Center(
@@ -130,12 +73,10 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                           child: ElevatedButton(
                             style: ButtonStyle(
                               backgroundColor: WidgetStateProperty.all<Color>(
-                                Colors.white,
+                                secondaryColour,
                               ),
                             ),
-                            onPressed: () {
-                              FirebaseAuth.instance.signOut();
-                            },
+                            onPressed: () => authentication.signOut(),
                             child: const Text(
                               'Sign Out',
                               style: TextStyle(
@@ -146,7 +87,7 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        gapH20,
                         TextButton(
                           onPressed: () {
                             // delete account
@@ -158,31 +99,45 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                                   title: const Text(
                                     'Are you sure you want to delete your account?',
                                     style: TextStyle(
-                                      color: Colors.white,
+                                      color: secondaryColour,
                                     ),
                                   ),
                                   actions: [
                                     TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
+                                      onPressed: () => Navigator.pop(context),
                                       child: const Text(
                                         'Cancel',
                                         style: TextStyle(
-                                          color: Colors.white,
+                                          color: secondaryColour,
                                         ),
                                       ),
                                     ),
                                     TextButton(
-                                      onPressed: () async {
-                                        await deleteAccount();
+                                      onPressed: () {
                                         // ignore: use_build_context_synchronously
                                         Navigator.pop(context);
+                                        try {
+                                          authentication.deleteAccount();
+                                        } catch (e) {
+                                          // ignore: use_build_context_synchronously
+                                          showMessage(e.toString(), context);
+                                          Future.delayed(
+                                            const Duration(milliseconds: 3000),
+                                            () {
+                                              // Pop dialog
+                                              // ignore: use_build_context_synchronously
+                                              Navigator.pop(context);
+                                              // Pop progress indicator
+                                              // ignore: use_build_context_synchronously
+                                              Navigator.pop(context);
+                                            },
+                                          );
+                                        }
                                       },
                                       child: const Text(
                                         'Delete',
                                         style: TextStyle(
-                                          color: Colors.white,
+                                          color: secondaryColour,
                                         ),
                                       ),
                                     ),
@@ -194,13 +149,11 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                           child: const Text(
                             'Delete Account',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: secondaryColour,
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          height: 80,
-                        ),
+                        gapH80,
                       ],
                     )
                   : Column(
@@ -217,9 +170,7 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                           hintText: 'Email',
                           mediaWidth: mediaWidth,
                         ),
-                        const SizedBox(
-                          height: 20,
-                        ),
+                        gapH20,
                         LoginFieldWidget(
                           textController: _passwordController,
                           obscurePassword: true,
@@ -233,7 +184,7 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                           child: ElevatedButton(
                             style: ButtonStyle(
                               backgroundColor: WidgetStateProperty.all<Color>(
-                                Colors.white,
+                                secondaryColour,
                               ),
                             ),
                             onPressed: () async {
@@ -243,16 +194,35 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                                 builder: (BuildContext context) {
                                   return const Center(
                                     child: CircularProgressIndicator(
-                                      color: Colors.white,
+                                      color: secondaryColour,
                                     ),
                                   );
                                 },
                               );
-                              await signIn();
-                              // ignore: use_build_context_synchronously
-                              Navigator.pop(context);
-                              // ignore: use_build_context_synchronously
-                              Beamer.of(context).beamToNamed('/home');
+                              try {
+                                await authentication.signIn(
+                                  _emailController.text.trim(),
+                                  _passwordController.text.trim(),
+                                );
+                                // ignore: use_build_context_synchronously
+                                Navigator.pop(context);
+                                // ignore: use_build_context_synchronously
+                                Beamer.of(context).beamToNamed('/home');
+                              } catch (e) {
+                                // ignore: use_build_context_synchronously
+                                showMessage(e.toString(), context);
+                                Future.delayed(
+                                  const Duration(milliseconds: 3000),
+                                  () {
+                                    // Pop dialog
+                                    // ignore: use_build_context_synchronously
+                                    Navigator.pop(context);
+                                    // Pop progress indicator
+                                    // ignore: use_build_context_synchronously
+                                    Navigator.pop(context);
+                                  },
+                                );
+                              }
                             },
                             child: const Text(
                               'Go',
@@ -266,19 +236,16 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                         ),
                         gapH20,
                         TextButton(
-                          onPressed: () {
-                            Beamer.of(context).beamToNamed('/sign-up');
-                          },
+                          onPressed: () =>
+                              Beamer.of(context).beamToNamed('/sign-up'),
                           child: const Text(
                             'Sign Up',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: secondaryColour,
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          height: 20,
-                        ),
+                        gapH20,
                         TextButton(
                           onPressed: () {
                             Beamer.of(context).beamToNamed('/forgot-password');
@@ -286,13 +253,11 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                           child: const Text(
                             'Forgot Password?',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: secondaryColour,
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          height: 80,
-                        ),
+                        gapH80,
                       ],
                     ),
             ),

@@ -1,22 +1,24 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '/models/task_model.dart';
-import '/constants.dart';
+import '../models/task_model.dart';
+import '../../config/constants.dart';
 
+/// Firestore service to interact with Firestore database
 class FirestoreService {
-  // Get collection of users
-  final CollectionReference users =
-      FirebaseFirestore.instance.collection('users');
+  /// Get collection of users
+  final users = FirebaseFirestore.instance.collection('users');
 
-  // Get collection of the user's tasks
-  final CollectionReference tasks = FirebaseFirestore.instance
+  /// Get collection of a user's tasks
+  final tasks = FirebaseFirestore.instance
       .collection('users')
       .doc(FirebaseAuth.instance.currentUser?.uid)
       .collection('tasks');
 
-  // Create new task for current user
+  /// Create new task for current user
   Future<void> addTask({required Task task}) async {
     await users
         .doc(FirebaseAuth.instance.currentUser?.uid)
@@ -33,14 +35,29 @@ class FirestoreService {
     });
   }
 
-  // Create new user
+  // Recursively generate unique taskID for a new task
+  String generateTaskID() {
+    final generatedID = Random().nextInt(999999).toString();
+    getTasks().listen((snapshot) {
+      if (snapshot.docs.isNotEmpty) {
+        for (var doc in snapshot.docs) {
+          if (doc['taskID'] == generatedID) {
+            generateTaskID();
+          }
+        }
+      }
+    });
+    return generatedID;
+  }
+
+  /// Create new user
   Future<void> addUser({required String userID}) async {
     await users.doc(userID).set({
       'userID': userID,
     });
   }
 
-  // Get all tasks for current user
+  /// Get all tasks for current user
   Stream<QuerySnapshot> getTasks() {
     return users
         .doc(FirebaseAuth.instance.currentUser?.uid)
@@ -49,25 +66,25 @@ class FirestoreService {
         .snapshots();
   }
 
-  // Get tasks by filter for current user
-  Stream<QuerySnapshot> getFilteredTasks(String filter, bool isFiltered) {
-    if (!isFiltered) {
-      return users
-          .doc(FirebaseAuth.instance.currentUser?.uid)
-          .collection('tasks')
-          .orderBy('timestamp', descending: true)
-          .snapshots();
-    } else {
-      return users
-          .doc(FirebaseAuth.instance.currentUser?.uid)
-          .collection('tasks')
-          .where('taskTag', isEqualTo: filter)
-          .orderBy('timestamp', descending: true)
-          .snapshots();
-    }
-  }
+  // Get tasks by filter for current user - not in use
+  // Stream<QuerySnapshot> getFilteredTasks(String filter, bool isFiltered) {
+  //   if (!isFiltered) {
+  //     return users
+  //         .doc(FirebaseAuth.instance.currentUser?.uid)
+  //         .collection('tasks')
+  //         .orderBy('timestamp', descending: true)
+  //         .snapshots();
+  //   } else {
+  //     return users
+  //         .doc(FirebaseAuth.instance.currentUser?.uid)
+  //         .collection('tasks')
+  //         .where('taskTag', isEqualTo: filter)
+  //         .orderBy('timestamp', descending: true)
+  //         .snapshots();
+  //   }
+  // }
 
-  // Get single task by taskID
+  /// Get single task by taskID
   Future<Task> getTask(String taskID) async {
     final task = await users
         .doc(FirebaseAuth.instance.currentUser?.uid)
@@ -83,6 +100,7 @@ class FirestoreService {
     );
   }
 
+  /// Get the string representation of a colour
   String getStringFromColour(Color colour) {
     if (colour == blue) {
       return "Color(0xff014c63)";
@@ -107,17 +125,17 @@ class FirestoreService {
     }
   }
 
-  // Get colour from String
+  /// Get colour from String
   Color getColourFromString(String colourString) {
-    const String blueString = "Color(0xff014c63)";
-    const String redString = "Color(0xff890000)";
-    const String yellowString = "Color(0xffba9600)";
-    const String greenString = "Color(0xff3b5828)";
-    const String orangeString = "Color(0xffae3d00)";
-    const String blueGreyString = "Color(0xff607d8b)";
-    const String brownString = "Color(0xff4e4544)";
-    const String pinkString = "Color(0xff7f7384)";
-    const String blackString = "Color(0xff101820)";
+    const blueString = "Color(0xff014c63)";
+    const redString = "Color(0xff890000)";
+    const yellowString = "Color(0xffba9600)";
+    const greenString = "Color(0xff3b5828)";
+    const orangeString = "Color(0xffae3d00)";
+    const blueGreyString = "Color(0xff607d8b)";
+    const brownString = "Color(0xff4e4544)";
+    const pinkString = "Color(0xff7f7384)";
+    const blackString = "Color(0xff101820)";
 
     switch (colourString) {
       case blueString:
@@ -143,7 +161,7 @@ class FirestoreService {
     }
   }
 
-  // Update task for current user
+  /// Update task for current user
   Future<void> updateTask(String taskID, Task newTask) async {
     await users
         .doc(FirebaseAuth.instance.currentUser?.uid)
@@ -159,7 +177,7 @@ class FirestoreService {
     });
   }
 
-  // Update timestamp for task for reordering
+  /// Update timestamp for task for chronological reordering
   Future<void> updateTimeStamp(String taskID) async {
     await users
         .doc(FirebaseAuth.instance.currentUser?.uid)
@@ -170,7 +188,7 @@ class FirestoreService {
     });
   }
 
-  // Delete task for current user
+  /// Delete current task for current user
   Future<void> deleteTask(String taskID) async {
     await users
         .doc(FirebaseAuth.instance.currentUser?.uid)

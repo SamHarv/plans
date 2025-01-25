@@ -2,16 +2,18 @@ import 'package:beamer/beamer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'models/task_model.dart';
-import 'pages/sign_up_page.dart';
-import 'pages/forgot_password_page.dart';
-import 'pages/sign_in_page.dart';
-import 'pages/home_page.dart';
-import 'pages/task_page.dart';
+import '../../data/models/task_model.dart';
+import '../../ui/views/auth_pages/sign_up_page.dart';
+import '../../ui/views/auth_pages/forgot_password_page.dart';
+import '../../ui/views/auth_pages/sign_in_page.dart';
+import '../../ui/views/home_page.dart';
+import '../../ui/views/task_page.dart';
 
-final User? user = FirebaseAuth.instance.currentUser;
+/// Instance of [user] from [FirebaseAuth] to determine whether logged in
+final user = FirebaseAuth.instance.currentUser;
 
 final routerDelegate = BeamerDelegate(
+  // Go to sign-in page if user is not logged in
   notFoundRedirectNamed: user == null ? '/sign-in' : '/home',
   initialPath: user == null ? '/sign-in' : '/home',
   locationBuilder: RoutesLocationBuilder(

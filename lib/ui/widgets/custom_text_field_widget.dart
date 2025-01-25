@@ -5,7 +5,7 @@ class CustomTextFieldWidget extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final int? maxLines;
-  final double fontSize;
+  final double fontSize; // for hint text
   final TextStyle style;
   final Function(String) onUpdate;
   final UndoHistoryController undoController;

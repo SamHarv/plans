@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '/models/task_model.dart';
-import '/state_management/riverpod_providers.dart';
+import '../../data/models/task_model.dart';
+import '../../logic/providers/riverpod_providers.dart';
 
 class PaletteColourWidget extends ConsumerStatefulWidget {
   final Color paletteColour;

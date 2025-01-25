@@ -2,24 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:beamer/beamer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '/widgets/confirm_delete_widget.dart';
-import '/widgets/exit_without_saving_widget.dart';
-import '/state_management/riverpod_providers.dart';
-import '/widgets/palette_colour_widget.dart';
-import '/constants.dart';
-import '/models/task_model.dart';
-import '/widgets/custom_text_field_widget.dart';
-import '/widgets/custom_dialog_widget.dart';
+import '../widgets/confirm_delete_widget.dart';
+import '../widgets/exit_without_saving_widget.dart';
+import '../widgets/palette_colour_widget.dart';
+import '../widgets/custom_text_field_widget.dart';
+import '../widgets/custom_dialog_widget.dart';
+import '../../config/constants.dart';
+import '../../data/models/task_model.dart';
+import '../../logic/providers/riverpod_providers.dart';
 
 class TaskPage extends ConsumerStatefulWidget {
   final Task task;
   final String taskID;
 
-  const TaskPage({
-    super.key,
-    required this.task,
-    required this.taskID,
-  });
+  const TaskPage({super.key, required this.task, required this.taskID});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _TaskPageState();
@@ -52,7 +48,7 @@ class _TaskPageState extends ConsumerState<TaskPage> {
           leading: IconButton(
             icon: const Icon(
               Icons.arrow_back,
-              color: Colors.white,
+              color: secondaryColour,
             ),
             onPressed: () {
               if (headingController.text != "") {
@@ -72,15 +68,15 @@ class _TaskPageState extends ConsumerState<TaskPage> {
           ),
           actions: [
             IconButton(
-              icon: const Icon(Icons.undo, color: Colors.white),
+              icon: const Icon(Icons.undo, color: secondaryColour),
               onPressed: () => bodyUndoController.undo(),
             ),
             IconButton(
-              icon: const Icon(Icons.redo, color: Colors.white),
+              icon: const Icon(Icons.redo, color: secondaryColour),
               onPressed: () => bodyUndoController.redo(),
             ),
             IconButton(
-              icon: const Icon(Icons.color_lens, color: Colors.white),
+              icon: const Icon(Icons.color_lens, color: secondaryColour),
               onPressed: () {
                 if (headingController.text != "") {
                   widget.task.taskHeading = headingController.text;
@@ -188,7 +184,7 @@ class _TaskPageState extends ConsumerState<TaskPage> {
             IconButton(
               icon: const Icon(
                 Icons.delete,
-                color: Colors.white,
+                color: secondaryColour,
               ),
               onPressed: () {
                 showDialog(
@@ -217,7 +213,7 @@ class _TaskPageState extends ConsumerState<TaskPage> {
                         // db.updateTask(widget.taskID, widget.task);
                       },
                       controller: headingController,
-                      hintText: "Click here to add heading",
+                      hintText: "Click to add heading",
                       maxLines: 1,
                       fontSize: 24,
                       style: headingStyle,
@@ -233,9 +229,8 @@ class _TaskPageState extends ConsumerState<TaskPage> {
                           undoController: bodyUndoController,
                           onUpdate: (text) {
                             // Add dot point by entering '.. '
-                            if (text.length > 2 &&
-                                (text.substring(text.length - 3, text.length) ==
-                                    '.. ')) {
+                            if (text.substring(text.length - 3, text.length) ==
+                                '.. ') {
                               bodyController.text =
                                   '${text.substring(0, text.length - 3)}• ';
                             }
@@ -249,12 +244,9 @@ class _TaskPageState extends ConsumerState<TaskPage> {
                                 textList[textList.length - 2] != '• ') {
                               bodyController.text = '$text• ';
                             }
-                            // Constantly save
-                            // widget.task.taskContents = text;
-                            // db.updateTask(widget.taskID, widget.task);
                           },
                           controller: bodyController,
-                          hintText: "Click here to add notes",
+                          hintText: "Click to add notes",
                           maxLines: null,
                           fontSize: 18,
                           style: bodyStyle,
@@ -270,7 +262,7 @@ class _TaskPageState extends ConsumerState<TaskPage> {
               child: Padding(
                 padding: const EdgeInsets.all(24),
                 child: FloatingActionButton.small(
-                  backgroundColor: Colors.white,
+                  backgroundColor: secondaryColour,
                   onPressed: () {
                     if (headingController.text != "") {
                       widget.task.taskHeading = headingController.text;

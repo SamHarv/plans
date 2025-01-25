@@ -1,5 +1,0 @@
-- Publish to Playstore
-- Testing and documentation
-- Fix reordering
-- Add Checklist tasks
-- Test on iOS

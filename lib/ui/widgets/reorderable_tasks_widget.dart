@@ -1,15 +1,14 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:beamer/beamer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '/constants.dart';
-import '/services/firestore_service.dart';
-import '/state_management/riverpod_providers.dart';
-import '/models/task_model.dart';
+import '../../config/constants.dart';
+import '../../data/repos/firestore_service.dart';
+import '../../logic/providers/riverpod_providers.dart';
+import '../../data/models/task_model.dart';
 
 class ReorderableTasksWidget extends ConsumerStatefulWidget {
   const ReorderableTasksWidget({super.key});
@@ -32,10 +31,10 @@ class _ReorderableTasksWidgetState
 
     db = ref.read(database);
     tasks = ref.read(tasksProvider);
-    filter = ref.read(filterProvider);
-    isFiltered = ref.read(isFilteredProvider);
+    // filter = ref.read(filterProvider); // not in use
+    // isFiltered = ref.read(isFilteredProvider); // not in use
 
-    // get tasks by filter
+    // get tasks - necessary for reordering
     db.getTasks().listen((snapshot) {
       if (snapshot.docs.isNotEmpty) {
         tasks = snapshot.docs.map((doc) {
@@ -53,33 +52,17 @@ class _ReorderableTasksWidgetState
 
   // Update order of tasks
   Future<void> updateOrder(int oldIndex, int newIndex) async {
-    // if (oldIndex < newIndex) {
-    //   newIndex -= 1;
-    // }
-    // tasks.insert(newIndex, tasks.removeAt(oldIndex));
-    // // Reverse list to update timestamp in correct order
-    // tasks = tasks.reversed.toList();
-    // final batch = FirebaseFirestore.instance.batch();
-    // // Using indexed numerical key rather than actual time to update timestamp
-    // // for improved efficiency
-    // for (int i = 0; i < tasks.length; i++) {
-    //   batch.update(db.tasks.doc(tasks[i].taskID), {'timestamp': i});
-    // }
-    // await batch.commit();
-
     if (oldIndex < newIndex) {
       newIndex -= 1;
     }
-    final movedTask = tasks.removeAt(oldIndex);
-    tasks.insert(newIndex, movedTask);
-
+    tasks.insert(newIndex, tasks.removeAt(oldIndex));
+    // Reverse list to update timestamp in correct order
+    tasks = tasks.reversed.toList();
     final batch = FirebaseFirestore.instance.batch();
-    final start = min(oldIndex, newIndex);
-    final end = max(oldIndex, newIndex);
-
-    for (int i = start; i <= end; i++) {
-      batch.update(
-          db.tasks.doc(tasks[i].taskID), {'timestamp': tasks.length - 1 - i});
+    // Using indexed numerical key rather than actual time to update timestamp
+    // for improved efficiency
+    for (int i = 0; i < tasks.length; i++) {
+      batch.update(db.tasks.doc(tasks[i].taskID), {'timestamp': i});
     }
     await batch.commit();
   }
@@ -88,11 +71,9 @@ class _ReorderableTasksWidgetState
   Widget build(BuildContext context) {
     // Listen to task changes
     return StreamBuilder<QuerySnapshot>(
-      stream: db.getFilteredTasks(
-          ref.watch(filterProvider), ref.watch(isFilteredProvider)),
+      stream: db.getTasks(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          // print('An error occurred: ${snapshot.error}');
           return Center(
             child: Text('An error occurred: ${snapshot.error}'),
           );
@@ -196,7 +177,9 @@ class _ReorderableTasksWidgetState
           );
         } else {
           return const Center(
-            child: CircularProgressIndicator(),
+            child: CircularProgressIndicator(
+              color: secondaryColour,
+            ),
           );
         }
       },

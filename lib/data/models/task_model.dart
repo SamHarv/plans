@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:plans/constants.dart';
+import '../../config/constants.dart';
 
+/// [Task] model to represent a task entry
 class Task {
   String taskID;
   Color taskColour;
@@ -10,9 +11,9 @@ class Task {
 
   Task({
     required this.taskID,
-    this.taskColour = colour,
+    this.taskColour = colour, // Default colour
     this.taskHeading = "",
     this.taskContents = "",
-    this.taskTag = "",
+    this.taskTag = "", // Not in use
   });
 }
