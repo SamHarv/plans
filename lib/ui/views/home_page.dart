@@ -24,6 +24,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       backgroundColor: colour,
       appBar: AppBar(
         title: appTitle,
+        centerTitle: false,
         automaticallyImplyLeading: false,
         backgroundColor: colour,
         actions: [

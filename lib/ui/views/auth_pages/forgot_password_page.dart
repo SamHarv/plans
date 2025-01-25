@@ -34,11 +34,11 @@ class _ForgotPasswordPageWidgetState extends ConsumerState<ForgotPasswordPage> {
       backgroundColor: colour,
       appBar: AppBar(
         title: appTitle,
+        centerTitle: false,
         backgroundColor: colour,
         automaticallyImplyLeading: false,
         actions: [
           O2TechIcon(),
-          const SizedBox(width: 8),
         ],
       ),
       body: Center(

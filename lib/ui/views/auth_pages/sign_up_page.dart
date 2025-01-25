@@ -68,6 +68,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
       backgroundColor: colour,
       appBar: AppBar(
         title: appTitle,
+        centerTitle: false,
         backgroundColor: colour,
         automaticallyImplyLeading: false,
         actions: [

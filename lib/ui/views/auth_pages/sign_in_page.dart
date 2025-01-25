@@ -37,6 +37,7 @@ class _SignInPageState extends ConsumerState<SignInPage> {
         return Scaffold(
           backgroundColor: colour,
           appBar: AppBar(
+            centerTitle: false,
             title: appTitle,
             backgroundColor: colour,
             automaticallyImplyLeading: userLoggedIn ? true : false,
