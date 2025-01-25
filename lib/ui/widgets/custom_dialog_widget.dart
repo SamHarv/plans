@@ -5,7 +5,7 @@ import '../../config/constants.dart';
 
 class CustomDialogWidget extends ConsumerWidget {
   /// Custom dialog widget
-  ///
+
   final String dialogHeading;
   // Content not limited to text (e.g. colour palette)
   final Widget? dialogContent;

@@ -3,11 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../data/models/task_model.dart';
-import '../../ui/views/auth_pages/sign_up_page.dart';
-import '../../ui/views/auth_pages/forgot_password_page.dart';
-import '../../ui/views/auth_pages/sign_in_page.dart';
-import '../../ui/views/home_page.dart';
-import '../../ui/views/task_page.dart';
+import '../../ui/views/auth_views/sign_up_view.dart';
+import '../../ui/views/auth_views/forgot_password_view.dart';
+import '../../ui/views/auth_views/sign_in_view.dart';
+import '../../ui/views/home_view.dart';
+import '../../ui/views/task_view.dart';
 
 /// Instance of [user] from [FirebaseAuth] to determine whether logged in
 final user = FirebaseAuth.instance.currentUser;
@@ -24,7 +24,7 @@ final routerDelegate = BeamerDelegate(
           key: ValueKey('home'),
           type: BeamPageType.fadeTransition,
           title: 'Plans',
-          child: HomePage(),
+          child: HomeView(),
         );
       },
 
@@ -34,7 +34,7 @@ final routerDelegate = BeamerDelegate(
           key: const ValueKey('task-page'),
           type: BeamPageType.fadeTransition,
           title: '$data.taskHeading',
-          child: TaskPage(task: data as Task, taskID: data.taskID),
+          child: TaskView(task: data as Task, taskID: data.taskID),
         );
       },
 
@@ -44,7 +44,7 @@ final routerDelegate = BeamerDelegate(
           key: ValueKey('sign-in'),
           type: BeamPageType.fadeTransition,
           title: 'Sign In - Plans',
-          child: SignInPage(),
+          child: SignInView(),
         );
       },
 
@@ -54,7 +54,7 @@ final routerDelegate = BeamerDelegate(
           key: ValueKey('sign-up'),
           type: BeamPageType.fadeTransition,
           title: 'Sign Up - Plans',
-          child: SignUpPage(),
+          child: SignUpView(),
         );
       },
 
@@ -64,7 +64,7 @@ final routerDelegate = BeamerDelegate(
           key: ValueKey('forgot-password'),
           type: BeamPageType.fadeTransition,
           title: 'Forgot Password - Plans',
-          child: ForgotPasswordPage(),
+          child: ForgotPasswordView(),
         );
       },
     },

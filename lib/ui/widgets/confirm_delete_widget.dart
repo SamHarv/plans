@@ -2,13 +2,13 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
 import '../../data/models/task_model.dart';
-import '../../data/repos/firestore_service.dart';
+import '../../data/database/firestore.dart';
 import '../../config/constants.dart';
 import 'custom_dialog_widget.dart';
 
 class ConfirmDeleteWidget extends StatelessWidget {
   /// A widget that displays a dialog to confirm the deletion of a task.
-  final FirestoreService db;
+  final Firestore db;
   final Task task;
 
   const ConfirmDeleteWidget({super.key, required this.db, required this.task});

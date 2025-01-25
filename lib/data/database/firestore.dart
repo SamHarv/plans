@@ -8,7 +8,7 @@ import '../models/task_model.dart';
 import '../../config/constants.dart';
 
 /// Firestore service to interact with Firestore database
-class FirestoreService {
+class Firestore {
   /// Get collection of users
   final users = FirebaseFirestore.instance.collection('users');
 

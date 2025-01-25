@@ -2,22 +2,20 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '/ui/widgets/login_field_widget.dart';
-import '/ui/widgets/o2_tech_icon.dart';
-import '../../../logic/providers/riverpod_providers.dart';
+import '../../widgets/auth_field_widget.dart';
+import '../../widgets/o2_tech_icon_widget.dart';
 import '../../../config/constants.dart';
+import '../../../logic/providers/providers.dart';
 
-class ForgotPasswordPage extends ConsumerStatefulWidget {
-  /// UI for resetting password
-
-  const ForgotPasswordPage({super.key});
+class SignUpView extends ConsumerStatefulWidget {
+  /// UI to sign up a user
+  const SignUpView({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _ForgotPasswordPageWidgetState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _SignUpPageState();
 }
 
-class _ForgotPasswordPageWidgetState extends ConsumerState<ForgotPasswordPage> {
+class _SignUpPageState extends ConsumerState<SignUpView> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
@@ -30,6 +28,7 @@ class _ForgotPasswordPageWidgetState extends ConsumerState<ForgotPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
+    final db = ref.read(database);
     final authentication = ref.read(auth);
     final mediaWidth = MediaQuery.sizeOf(context).width;
     return Scaffold(
@@ -40,7 +39,7 @@ class _ForgotPasswordPageWidgetState extends ConsumerState<ForgotPasswordPage> {
         backgroundColor: colour,
         automaticallyImplyLeading: false,
         actions: [
-          O2TechIcon(), // Launch O2Tech website
+          O2TechIconWidget(), // Launch O2Tech website
         ],
       ),
       body: Center(
@@ -49,16 +48,21 @@ class _ForgotPasswordPageWidgetState extends ConsumerState<ForgotPasswordPage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               const Text(
-                'Receive an email to\nreset your password',
+                'Sign Up',
                 style: headingStyle,
-                textAlign: TextAlign.center,
               ),
               gapH20,
-              // Enter email
-              LoginFieldWidget(
+              AuthFieldWidget(
                 textController: _emailController,
                 obscurePassword: false,
                 hintText: 'Email',
+                mediaWidth: mediaWidth,
+              ),
+              gapH20,
+              AuthFieldWidget(
+                textController: _passwordController,
+                obscurePassword: true,
+                hintText: 'Password',
                 mediaWidth: mediaWidth,
               ),
               gapH20,
@@ -76,7 +80,7 @@ class _ForgotPasswordPageWidgetState extends ConsumerState<ForgotPasswordPage> {
                     showDialog(
                       context: context,
                       barrierDismissible: false,
-                      builder: (context) {
+                      builder: (BuildContext context) {
                         return const Center(
                           child: CircularProgressIndicator(
                             color: secondaryColour,
@@ -85,27 +89,21 @@ class _ForgotPasswordPageWidgetState extends ConsumerState<ForgotPasswordPage> {
                       },
                     );
                     try {
-                      // Reset password
-                      await authentication.resetPassword(
+                      // Sign up user
+                      await authentication.signUp(
+                        db,
                         _emailController.text.trim(),
+                        _passwordController.text.trim(),
                       );
-                      // Pop loading dialog
+                      // Pop progress indicator
                       // ignore: use_build_context_synchronously
                       Navigator.pop(context);
                       // ignore: use_build_context_synchronously
-                      showMessage('Email Sent!', context);
-                      Future.delayed(
-                        const Duration(milliseconds: 1000),
-                        () {
-                          // Beam to sign in page after dialog is read
-                          // ignore: use_build_context_synchronously
-                          Beamer.of(context).beamToNamed('/sign-in');
-                        },
-                      );
+                      Beamer.of(context).beamToNamed('/home');
                     } catch (e) {
+                      // Show error for 3 seconds
                       // ignore: use_build_context_synchronously
                       showMessage(e.toString(), context);
-                      // Allow time to read dialog
                       Future.delayed(
                         const Duration(milliseconds: 3000),
                         () {
@@ -131,10 +129,14 @@ class _ForgotPasswordPageWidgetState extends ConsumerState<ForgotPasswordPage> {
               ),
               gapH20,
               TextButton(
-                onPressed: () => Beamer.of(context).beamToNamed('/sign-in'),
+                onPressed: () {
+                  Beamer.of(context).beamToNamed('/sign-in');
+                },
                 child: const Text(
                   'Sign In',
-                  style: TextStyle(color: secondaryColour),
+                  style: TextStyle(
+                    color: secondaryColour,
+                  ),
                 ),
               ),
               gapH80,

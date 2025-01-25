@@ -6,8 +6,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../config/constants.dart';
-import '../../data/repos/firestore_service.dart';
-import '../../logic/providers/riverpod_providers.dart';
+import '../../data/database/firestore.dart';
+import '../../logic/providers/providers.dart';
 import '../../data/models/task_model.dart';
 
 class ReorderableTasksWidget extends ConsumerStatefulWidget {
@@ -22,7 +22,7 @@ class ReorderableTasksWidget extends ConsumerStatefulWidget {
 
 class _ReorderableTasksWidgetState
     extends ConsumerState<ReorderableTasksWidget> {
-  late FirestoreService db;
+  late Firestore db;
   late List<Task> tasks;
   // late String filter; // not in use
   // late bool isFiltered; // not in use

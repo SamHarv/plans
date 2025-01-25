@@ -9,21 +9,21 @@ import '../widgets/custom_text_field_widget.dart';
 import '../widgets/custom_dialog_widget.dart';
 import '../../config/constants.dart';
 import '../../data/models/task_model.dart';
-import '../../logic/providers/riverpod_providers.dart';
+import '../../logic/providers/providers.dart';
 
-class TaskPage extends ConsumerStatefulWidget {
+class TaskView extends ConsumerStatefulWidget {
   /// UI for a single task
 
   final Task task;
   final String taskID;
 
-  const TaskPage({super.key, required this.task, required this.taskID});
+  const TaskView({super.key, required this.task, required this.taskID});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _TaskPageState();
 }
 
-class _TaskPageState extends ConsumerState<TaskPage> {
+class _TaskPageState extends ConsumerState<TaskView> {
   @override
   Widget build(BuildContext context) {
     final headingController =

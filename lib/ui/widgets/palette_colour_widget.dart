@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/models/task_model.dart';
-import '../../logic/providers/riverpod_providers.dart';
+import '../../logic/providers/providers.dart';
 
 class PaletteColourWidget extends ConsumerStatefulWidget {
   /// A widget that displays a colour from the palette and allows the user to

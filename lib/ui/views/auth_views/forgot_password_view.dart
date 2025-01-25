@@ -2,20 +2,22 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../widgets/login_field_widget.dart';
-import '../../widgets/o2_tech_icon.dart';
+import '../../widgets/auth_field_widget.dart';
+import '../../widgets/o2_tech_icon_widget.dart';
+import '../../../logic/providers/providers.dart';
 import '../../../config/constants.dart';
-import '../../../logic/providers/riverpod_providers.dart';
 
-class SignUpPage extends ConsumerStatefulWidget {
-  /// UI to sign up a user
-  const SignUpPage({super.key});
+class ForgotPasswordView extends ConsumerStatefulWidget {
+  /// UI for resetting password
+
+  const ForgotPasswordView({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _SignUpPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _ForgotPasswordPageWidgetState();
 }
 
-class _SignUpPageState extends ConsumerState<SignUpPage> {
+class _ForgotPasswordPageWidgetState extends ConsumerState<ForgotPasswordView> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
@@ -28,7 +30,6 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    final db = ref.read(database);
     final authentication = ref.read(auth);
     final mediaWidth = MediaQuery.sizeOf(context).width;
     return Scaffold(
@@ -39,7 +40,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
         backgroundColor: colour,
         automaticallyImplyLeading: false,
         actions: [
-          O2TechIcon(), // Launch O2Tech website
+          O2TechIconWidget(), // Launch O2Tech website
         ],
       ),
       body: Center(
@@ -48,21 +49,16 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               const Text(
-                'Sign Up',
+                'Receive an email to\nreset your password',
                 style: headingStyle,
+                textAlign: TextAlign.center,
               ),
               gapH20,
-              LoginFieldWidget(
+              // Enter email
+              AuthFieldWidget(
                 textController: _emailController,
                 obscurePassword: false,
                 hintText: 'Email',
-                mediaWidth: mediaWidth,
-              ),
-              gapH20,
-              LoginFieldWidget(
-                textController: _passwordController,
-                obscurePassword: true,
-                hintText: 'Password',
                 mediaWidth: mediaWidth,
               ),
               gapH20,
@@ -80,7 +76,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                     showDialog(
                       context: context,
                       barrierDismissible: false,
-                      builder: (BuildContext context) {
+                      builder: (context) {
                         return const Center(
                           child: CircularProgressIndicator(
                             color: secondaryColour,
@@ -89,21 +85,27 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                       },
                     );
                     try {
-                      // Sign up user
-                      await authentication.signUp(
-                        db,
+                      // Reset password
+                      await authentication.resetPassword(
                         _emailController.text.trim(),
-                        _passwordController.text.trim(),
                       );
-                      // Pop progress indicator
+                      // Pop loading dialog
                       // ignore: use_build_context_synchronously
                       Navigator.pop(context);
                       // ignore: use_build_context_synchronously
-                      Beamer.of(context).beamToNamed('/home');
+                      showMessage('Email Sent!', context);
+                      Future.delayed(
+                        const Duration(milliseconds: 1000),
+                        () {
+                          // Beam to sign in page after dialog is read
+                          // ignore: use_build_context_synchronously
+                          Beamer.of(context).beamToNamed('/sign-in');
+                        },
+                      );
                     } catch (e) {
-                      // Show error for 3 seconds
                       // ignore: use_build_context_synchronously
                       showMessage(e.toString(), context);
+                      // Allow time to read dialog
                       Future.delayed(
                         const Duration(milliseconds: 3000),
                         () {
@@ -129,14 +131,10 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
               ),
               gapH20,
               TextButton(
-                onPressed: () {
-                  Beamer.of(context).beamToNamed('/sign-in');
-                },
+                onPressed: () => Beamer.of(context).beamToNamed('/sign-in'),
                 child: const Text(
                   'Sign In',
-                  style: TextStyle(
-                    color: secondaryColour,
-                  ),
+                  style: TextStyle(color: secondaryColour),
                 ),
               ),
               gapH80,

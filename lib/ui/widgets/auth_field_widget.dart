@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../config/constants.dart';
 
-class LoginFieldWidget extends ConsumerWidget {
+class AuthFieldWidget extends ConsumerWidget {
   /// A widget that displays a text field for auth pages
 
   final TextEditingController textController;
@@ -11,7 +11,7 @@ class LoginFieldWidget extends ConsumerWidget {
   final String hintText;
   final double mediaWidth;
 
-  const LoginFieldWidget({
+  const AuthFieldWidget({
     super.key,
     required this.textController,
     required this.obscurePassword,

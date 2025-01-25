@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../../data/repos/firestore_service.dart';
+import '../../data/database/firestore.dart';
 
 class Auth {
   /// Sign in with email and password
@@ -16,7 +16,7 @@ class Auth {
   }
 
   /// Sign up with email and password
-  Future signUp(FirestoreService db, String email, String password) async {
+  Future signUp(Firestore db, String email, String password) async {
     try {
       UserCredential user =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(

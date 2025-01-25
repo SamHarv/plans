@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '/logic/providers/riverpod_providers.dart';
+import '../../logic/providers/providers.dart';
 
-class O2TechIcon extends ConsumerWidget {
-  /// The [O2TechIcon] is a custom widget that displays the O2Tech logo to
+class O2TechIconWidget extends ConsumerWidget {
+  /// The [O2TechIconWidget] is a custom widget that displays the O2Tech logo to
   /// launch the O2Tech website.
 
-  const O2TechIcon({super.key});
+  const O2TechIconWidget({super.key});
 
   @override
   Widget build(BuildContext context, ref) {

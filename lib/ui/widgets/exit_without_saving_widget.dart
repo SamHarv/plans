@@ -1,7 +1,7 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
-import '../../data/repos/firestore_service.dart';
+import '../../data/database/firestore.dart';
 import '../../config/constants.dart';
 import '../../data/models/task_model.dart';
 import 'custom_dialog_widget.dart';
@@ -9,7 +9,7 @@ import 'custom_dialog_widget.dart';
 class ExitWithoutSavingWidget extends StatelessWidget {
   /// A widget that prompts the user to enter a heading before
 
-  final FirestoreService db;
+  final Firestore db;
   final Task task;
 
   const ExitWithoutSavingWidget({

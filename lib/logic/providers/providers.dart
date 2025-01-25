@@ -2,14 +2,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../logic/services/auth.dart';
 import '../../logic/services/url_launcher.dart';
-import '../../data/repos/firestore_service.dart';
+import '../../data/database/firestore.dart';
 import '../../data/models/task_model.dart';
 
 /// Provide list of tasks
 final tasksProvider = StateProvider<List<Task>>((ref) => []);
 
 /// Provide singleton for Firestore database
-final database = StateProvider((ref) => FirestoreService());
+final database = StateProvider((ref) => Firestore());
 
 /// Provide singleton for [UrlLauncher]
 final url = StateProvider((ref) => UrlLauncher());

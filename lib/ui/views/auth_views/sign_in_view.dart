@@ -3,21 +3,21 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../logic/providers/riverpod_providers.dart';
-import '../../widgets/login_field_widget.dart';
-import '../..//widgets/o2_tech_icon.dart';
+import '../../../logic/providers/providers.dart';
+import '../../widgets/auth_field_widget.dart';
+import '../../widgets/o2_tech_icon_widget.dart';
 import '../../../config/constants.dart';
 
-class SignInPage extends ConsumerStatefulWidget {
+class SignInView extends ConsumerStatefulWidget {
   /// UI for signing in
 
-  const SignInPage({super.key});
+  const SignInView({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _SignInPageState();
 }
 
-class _SignInPageState extends ConsumerState<SignInPage> {
+class _SignInPageState extends ConsumerState<SignInView> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
@@ -56,7 +56,7 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                   )
                 : null,
             actions: [
-              O2TechIcon(), // Launch O2Tech website
+              O2TechIconWidget(), // Launch O2Tech website
             ],
           ),
           body: Center(
@@ -174,14 +174,14 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                           style: headingStyle,
                         ),
                         gapH20,
-                        LoginFieldWidget(
+                        AuthFieldWidget(
                           textController: _emailController,
                           obscurePassword: false,
                           hintText: 'Email',
                           mediaWidth: mediaWidth,
                         ),
                         gapH20,
-                        LoginFieldWidget(
+                        AuthFieldWidget(
                           textController: _passwordController,
                           obscurePassword: true,
                           hintText: 'Password',
