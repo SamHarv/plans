@@ -46,6 +46,7 @@ final appTitle = Text(
   ),
 );
 
+// Display an alert dialog with a message
 void showMessage(String message, BuildContext context) {
   showDialog(
     context: context,

@@ -7,8 +7,11 @@ import '../../data/models/task_model.dart';
 import 'custom_dialog_widget.dart';
 
 class ExitWithoutSavingWidget extends StatelessWidget {
+  /// A widget that prompts the user to enter a heading before
+
   final FirestoreService db;
   final Task task;
+
   const ExitWithoutSavingWidget({
     super.key,
     required this.db,
@@ -34,6 +37,7 @@ class ExitWithoutSavingWidget extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
+            // Delete task if user exits without saving
             db.deleteTask(task.taskID);
             Beamer.of(context).beamToNamed('/home');
           },

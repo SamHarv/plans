@@ -18,6 +18,7 @@ final routerDelegate = BeamerDelegate(
   initialPath: user == null ? '/sign-in' : '/home',
   locationBuilder: RoutesLocationBuilder(
     routes: {
+      /// Home page
       '/home': (context, state, data) {
         return const BeamPage(
           key: ValueKey('home'),
@@ -26,6 +27,8 @@ final routerDelegate = BeamerDelegate(
           child: HomePage(),
         );
       },
+
+      /// Task input/ display page
       '/task-page': (context, state, data) {
         return BeamPage(
           key: const ValueKey('task-page'),
@@ -34,6 +37,8 @@ final routerDelegate = BeamerDelegate(
           child: TaskPage(task: data as Task, taskID: data.taskID),
         );
       },
+
+      /// Sign in page
       '/sign-in': (context, state, data) {
         return const BeamPage(
           key: ValueKey('sign-in'),
@@ -42,6 +47,8 @@ final routerDelegate = BeamerDelegate(
           child: SignInPage(),
         );
       },
+
+      /// Sign up page
       '/sign-up': (context, state, data) {
         return const BeamPage(
           key: ValueKey('sign-up'),
@@ -50,6 +57,8 @@ final routerDelegate = BeamerDelegate(
           child: SignUpPage(),
         );
       },
+
+      /// Forgot password page
       '/forgot-password': (context, state, data) {
         return const BeamPage(
           key: ValueKey('forgot-password'),

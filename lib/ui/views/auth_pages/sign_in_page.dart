@@ -9,6 +9,8 @@ import '../..//widgets/o2_tech_icon.dart';
 import '../../../config/constants.dart';
 
 class SignInPage extends ConsumerStatefulWidget {
+  /// UI for signing in
+
   const SignInPage({super.key});
 
   @override
@@ -30,6 +32,8 @@ class _SignInPageState extends ConsumerState<SignInPage> {
   Widget build(BuildContext context) {
     final mediaWidth = MediaQuery.sizeOf(context).width;
     final authentication = ref.read(auth);
+
+    /// Stream to monitor whether logged in
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
@@ -40,6 +44,7 @@ class _SignInPageState extends ConsumerState<SignInPage> {
             centerTitle: false,
             title: appTitle,
             backgroundColor: colour,
+            // Back button if logged in to return home
             automaticallyImplyLeading: userLoggedIn ? true : false,
             leading: userLoggedIn
                 ? IconButton(
@@ -51,7 +56,7 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                   )
                 : null,
             actions: [
-              O2TechIcon(),
+              O2TechIcon(), // Launch O2Tech website
             ],
           ),
           body: Center(
@@ -115,11 +120,15 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                                     ),
                                     TextButton(
                                       onPressed: () {
+                                        // Pop progress indicator
                                         // ignore: use_build_context_synchronously
                                         Navigator.pop(context);
                                         try {
+                                          // Sign in page will rebuild without
+                                          // user logged in
                                           authentication.deleteAccount();
                                         } catch (e) {
+                                          // Show error for 3 seconds
                                           // ignore: use_build_context_synchronously
                                           showMessage(e.toString(), context);
                                           Future.delayed(
@@ -189,6 +198,7 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                               ),
                             ),
                             onPressed: () async {
+                              // Show progress indicator
                               showDialog(
                                 context: context,
                                 barrierDismissible: false,
@@ -201,15 +211,18 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                                 },
                               );
                               try {
+                                // Sign in
                                 await authentication.signIn(
                                   _emailController.text.trim(),
                                   _passwordController.text.trim(),
                                 );
+                                // Pop progress indicator
                                 // ignore: use_build_context_synchronously
                                 Navigator.pop(context);
                                 // ignore: use_build_context_synchronously
                                 Beamer.of(context).beamToNamed('/home');
                               } catch (e) {
+                                // Show error for 3 seconds
                                 // ignore: use_build_context_synchronously
                                 showMessage(e.toString(), context);
                                 Future.delayed(
@@ -248,9 +261,8 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                         ),
                         gapH20,
                         TextButton(
-                          onPressed: () {
-                            Beamer.of(context).beamToNamed('/forgot-password');
-                          },
+                          onPressed: () => Beamer.of(context)
+                              .beamToNamed('/forgot-password'),
                           child: const Text(
                             'Forgot Password?',
                             style: TextStyle(

@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../config/constants.dart';
 
 class LoginFieldWidget extends ConsumerWidget {
+  /// A widget that displays a text field for auth pages
+
   final TextEditingController textController;
   final bool obscurePassword;
   final String hintText;

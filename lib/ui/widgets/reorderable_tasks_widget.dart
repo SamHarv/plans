@@ -11,6 +11,8 @@ import '../../logic/providers/riverpod_providers.dart';
 import '../../data/models/task_model.dart';
 
 class ReorderableTasksWidget extends ConsumerStatefulWidget {
+  /// Reorderable list of tasks for home page
+
   const ReorderableTasksWidget({super.key});
 
   @override
@@ -22,8 +24,8 @@ class _ReorderableTasksWidgetState
     extends ConsumerState<ReorderableTasksWidget> {
   late FirestoreService db;
   late List<Task> tasks;
-  late String filter;
-  late bool isFiltered;
+  // late String filter; // not in use
+  // late bool isFiltered; // not in use
 
   @override
   void initState() {
@@ -73,18 +75,21 @@ class _ReorderableTasksWidgetState
     return StreamBuilder<QuerySnapshot>(
       stream: db.getTasks(),
       builder: (context, snapshot) {
+        // Display error message if error occurs
         if (snapshot.hasError) {
           return Center(
             child: Text('An error occurred: ${snapshot.error}'),
           );
         }
+        // Display loading spinner while waiting for data
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
             child: CircularProgressIndicator(
-              color: Colors.white,
+              color: secondaryColour,
             ),
           );
         }
+        // Display message if no tasks are found
         if (snapshot.data!.docs.isEmpty) {
           return Center(
             child: Column(
@@ -104,7 +109,7 @@ class _ReorderableTasksWidgetState
             ),
           );
         }
-
+        // Display tasks if tasks are found
         if (snapshot.data!.docs.isNotEmpty && snapshot.data != null) {
           final tasksFromSnapshot = snapshot.data!.docs.map((doc) {
             return Task(
@@ -116,12 +121,13 @@ class _ReorderableTasksWidgetState
             );
           }).toList();
 
-          // Build tasks for reordering and navigation to
+          // Build tasks for reordering and navigation to task page
           final tasks = tasksFromSnapshot.map((task) {
             return InkResponse(
               borderRadius: BorderRadius.circular(64),
               key: ValueKey(task.taskID),
               onTap: () {
+                // Get task and navigate to task page
                 final destinationTask = Task(
                   taskColour: task.taskColour,
                   taskHeading: task.taskHeading,

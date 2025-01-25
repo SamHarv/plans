@@ -1,15 +1,14 @@
 import 'package:beamer/beamer.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../data/repos/firestore_service.dart';
 import '../../widgets/login_field_widget.dart';
 import '../../widgets/o2_tech_icon.dart';
 import '../../../config/constants.dart';
 import '../../../logic/providers/riverpod_providers.dart';
 
 class SignUpPage extends ConsumerStatefulWidget {
+  /// UI to sign up a user
   const SignUpPage({super.key});
 
   @override
@@ -19,38 +18,6 @@ class SignUpPage extends ConsumerStatefulWidget {
 class _SignUpPageState extends ConsumerState<SignUpPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-
-  Future signUp(FirestoreService db) async {
-    try {
-      UserCredential user =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-      );
-      // Add user with user ID from Auth to Firestore
-      await db.addUser(userID: user.user!.uid);
-      showMessage('Account created!');
-    } on Exception catch (e) {
-      showMessage(e.toString());
-    }
-  }
-
-  void showMessage(String message) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: colour,
-          title: Center(
-            child: Text(
-              message,
-              style: const TextStyle(color: Colors.white),
-            ),
-          ),
-        );
-      },
-    );
-  }
 
   @override
   void dispose() {
@@ -72,7 +39,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
         backgroundColor: colour,
         automaticallyImplyLeading: false,
         actions: [
-          O2TechIcon(),
+          O2TechIcon(), // Launch O2Tech website
         ],
       ),
       body: Center(
@@ -109,6 +76,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                     ),
                   ),
                   onPressed: () async {
+                    // Show progress indicator
                     showDialog(
                       context: context,
                       barrierDismissible: false,
@@ -121,17 +89,21 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                       },
                     );
                     try {
+                      // Sign up user
                       await authentication.signUp(
                         db,
                         _emailController.text.trim(),
                         _passwordController.text.trim(),
                       );
+                      // Pop progress indicator
                       // ignore: use_build_context_synchronously
                       Navigator.pop(context);
                       // ignore: use_build_context_synchronously
                       Beamer.of(context).beamToNamed('/home');
                     } catch (e) {
-                      showMessage(e.toString());
+                      // Show error for 3 seconds
+                      // ignore: use_build_context_synchronously
+                      showMessage(e.toString(), context);
                       Future.delayed(
                         const Duration(milliseconds: 3000),
                         () {

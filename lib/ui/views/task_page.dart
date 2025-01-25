@@ -12,6 +12,8 @@ import '../../data/models/task_model.dart';
 import '../../logic/providers/riverpod_providers.dart';
 
 class TaskPage extends ConsumerStatefulWidget {
+  /// UI for a single task
+
   final Task task;
   final String taskID;
 
@@ -51,6 +53,7 @@ class _TaskPageState extends ConsumerState<TaskPage> {
               color: secondaryColour,
             ),
             onPressed: () {
+              // Save and go back to home if heading is not empty
               if (headingController.text != "") {
                 widget.task.taskHeading = headingController.text;
                 widget.task.taskContents = bodyController.text;
@@ -58,6 +61,7 @@ class _TaskPageState extends ConsumerState<TaskPage> {
                 db.updateTask(widget.task.taskID, widget.task);
                 Beamer.of(context).beamToNamed('/home');
               } else if (headingController.text == "") {
+                // Show dialog if heading is empty
                 showDialog(
                   context: context,
                   builder: (context) =>
@@ -67,23 +71,28 @@ class _TaskPageState extends ConsumerState<TaskPage> {
             },
           ),
           actions: [
+            // Undo typing
             IconButton(
               icon: const Icon(Icons.undo, color: secondaryColour),
               onPressed: () => bodyUndoController.undo(),
             ),
+            // Redo typing
             IconButton(
               icon: const Icon(Icons.redo, color: secondaryColour),
               onPressed: () => bodyUndoController.redo(),
             ),
+            // Select colour of background
             IconButton(
               icon: const Icon(Icons.color_lens, color: secondaryColour),
               onPressed: () {
+                // Save task text before changing colour
                 if (headingController.text != "") {
                   widget.task.taskHeading = headingController.text;
                   widget.task.taskContents = bodyController.text;
                   widget.task.taskColour = widget.task.taskColour;
                   db.updateTask(widget.task.taskID, widget.task);
                 }
+                // Show dialog to pick colour
                 showDialog(
                   context: context,
                   builder: (context) => StatefulBuilder(
@@ -161,11 +170,12 @@ class _TaskPageState extends ConsumerState<TaskPage> {
                           ),
                           TextButton(
                             onPressed: () {
+                              // Update task with new colour
                               setState(() {
                                 widget.task.taskColour = widget.task.taskColour;
                               });
                               db.updateTask(widget.taskID, widget.task);
-
+                              // Pop the dialog
                               Navigator.pop(context);
                             },
                             child: const Text(
@@ -178,15 +188,17 @@ class _TaskPageState extends ConsumerState<TaskPage> {
                     },
                   ),
                 );
-                setState(() {});
+                setState(() {}); // Update UI with new colour
               },
             ),
+            // Delete task
             IconButton(
               icon: const Icon(
                 Icons.delete,
                 color: secondaryColour,
               ),
               onPressed: () {
+                // Show dialog to confirm deletion
                 showDialog(
                   context: context,
                   builder: (context) =>
@@ -204,10 +216,12 @@ class _TaskPageState extends ConsumerState<TaskPage> {
               child: Column(
                 children: [
                   const SizedBox(height: 16),
+                  // Heading field
                   Align(
                     alignment: Alignment.topLeft,
                     child: CustomTextFieldWidget(
                       undoController: headingUndoController,
+                      // onUpdate functionality slowed down the app
                       onUpdate: (text) {
                         // widget.task.taskHeading = text;
                         // db.updateTask(widget.taskID, widget.task);
@@ -257,6 +271,7 @@ class _TaskPageState extends ConsumerState<TaskPage> {
                 ],
               ),
             ),
+            // Save button
             Align(
               alignment: Alignment.topRight,
               child: Padding(
@@ -264,12 +279,14 @@ class _TaskPageState extends ConsumerState<TaskPage> {
                 child: FloatingActionButton.small(
                   backgroundColor: secondaryColour,
                   onPressed: () {
+                    // Save task if heading is not empty
                     if (headingController.text != "") {
                       widget.task.taskHeading = headingController.text;
                       widget.task.taskContents = bodyController.text;
                       widget.task.taskColour = widget.task.taskColour;
                       db.updateTask(widget.task.taskID, widget.task);
                     }
+                    // Show dialog to confirm save
                     showDialog(
                       context: context,
                       builder: (context) => CustomDialogWidget(

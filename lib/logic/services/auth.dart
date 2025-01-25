@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../data/repos/firestore_service.dart';
 
 class Auth {
-  /// Sin in with email and password
+  /// Sign in with email and password
   Future signIn(String email, String password) async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(

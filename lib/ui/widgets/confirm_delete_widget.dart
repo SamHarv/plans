@@ -7,6 +7,7 @@ import '../../config/constants.dart';
 import 'custom_dialog_widget.dart';
 
 class ConfirmDeleteWidget extends StatelessWidget {
+  /// A widget that displays a dialog to confirm the deletion of a task.
   final FirestoreService db;
   final Task task;
 
@@ -21,6 +22,7 @@ class ConfirmDeleteWidget extends StatelessWidget {
         style: bodyStyle,
       ),
       dialogActions: [
+        // Cancel button
         TextButton(
           onPressed: () => Navigator.pop(context),
           child: const Text(
@@ -28,9 +30,12 @@ class ConfirmDeleteWidget extends StatelessWidget {
             style: bodyStyle,
           ),
         ),
+        // Delete button
         TextButton(
           onPressed: () {
+            // Delete the task from the database
             db.deleteTask(task.taskID);
+            // Close the dialog and navigate to the home page
             Navigator.pop(context);
             Beamer.of(context).beamToNamed('/home');
           },

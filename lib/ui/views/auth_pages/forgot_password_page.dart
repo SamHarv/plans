@@ -8,6 +8,8 @@ import '../../../logic/providers/riverpod_providers.dart';
 import '../../../config/constants.dart';
 
 class ForgotPasswordPage extends ConsumerStatefulWidget {
+  /// UI for resetting password
+
   const ForgotPasswordPage({super.key});
 
   @override
@@ -38,7 +40,7 @@ class _ForgotPasswordPageWidgetState extends ConsumerState<ForgotPasswordPage> {
         backgroundColor: colour,
         automaticallyImplyLeading: false,
         actions: [
-          O2TechIcon(),
+          O2TechIcon(), // Launch O2Tech website
         ],
       ),
       body: Center(
@@ -52,6 +54,7 @@ class _ForgotPasswordPageWidgetState extends ConsumerState<ForgotPasswordPage> {
                 textAlign: TextAlign.center,
               ),
               gapH20,
+              // Enter email
               LoginFieldWidget(
                 textController: _emailController,
                 obscurePassword: false,
@@ -69,6 +72,7 @@ class _ForgotPasswordPageWidgetState extends ConsumerState<ForgotPasswordPage> {
                     ),
                   ),
                   onPressed: () async {
+                    // Show progress indicator
                     showDialog(
                       context: context,
                       barrierDismissible: false,
@@ -81,9 +85,11 @@ class _ForgotPasswordPageWidgetState extends ConsumerState<ForgotPasswordPage> {
                       },
                     );
                     try {
+                      // Reset password
                       await authentication.resetPassword(
                         _emailController.text.trim(),
                       );
+                      // Pop loading dialog
                       // ignore: use_build_context_synchronously
                       Navigator.pop(context);
                       // ignore: use_build_context_synchronously
@@ -91,6 +97,7 @@ class _ForgotPasswordPageWidgetState extends ConsumerState<ForgotPasswordPage> {
                       Future.delayed(
                         const Duration(milliseconds: 1000),
                         () {
+                          // Beam to sign in page after dialog is read
                           // ignore: use_build_context_synchronously
                           Beamer.of(context).beamToNamed('/sign-in');
                         },
@@ -98,6 +105,7 @@ class _ForgotPasswordPageWidgetState extends ConsumerState<ForgotPasswordPage> {
                     } catch (e) {
                       // ignore: use_build_context_synchronously
                       showMessage(e.toString(), context);
+                      // Allow time to read dialog
                       Future.delayed(
                         const Duration(milliseconds: 3000),
                         () {

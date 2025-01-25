@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
 class CustomTextFieldWidget extends StatelessWidget {
+  /// Custome Text Field Widget for task heading and contents
   final double? height;
   final TextEditingController controller;
   final String hintText;
-  final int? maxLines;
+  final int? maxLines; // 1 for heading, null for content
   final double fontSize; // for hint text
   final TextStyle style;
   final Function(String) onUpdate;

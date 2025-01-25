@@ -9,6 +9,7 @@ import '../../config/constants.dart';
 import '../../data/models/task_model.dart';
 
 class HomePage extends ConsumerStatefulWidget {
+  /// Home page to display all tasks and create new ones
   const HomePage({super.key});
 
   @override
@@ -19,7 +20,6 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     final db = ref.read(database);
-
     return Scaffold(
       backgroundColor: colour,
       appBar: AppBar(
@@ -35,22 +35,24 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
             onPressed: () => Beamer.of(context).beamToNamed('/sign-in'),
           ),
-          O2TechIcon(),
+          O2TechIcon(), // Launch O2Tech website
         ],
       ),
       body: const Padding(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: ReorderableTasksWidget(),
+        child: ReorderableTasksWidget(), // Display all tasks
       ),
-      // Comment out below
+      // Add new task
       floatingActionButton: FloatingActionButton(
         backgroundColor: secondaryColour,
         onPressed: () {
+          // Create new task object with unique ID
           final newTask = Task(
             taskColour: colour,
             taskID: db.generateTaskID(),
           );
           try {
+            // Add task to database and navigate to task page
             db.addTask(task: newTask);
             Beamer.of(context).beamToNamed('/task-page', data: newTask);
           } catch (e) {

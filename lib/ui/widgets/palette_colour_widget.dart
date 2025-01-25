@@ -5,6 +5,9 @@ import '../../data/models/task_model.dart';
 import '../../logic/providers/riverpod_providers.dart';
 
 class PaletteColourWidget extends ConsumerStatefulWidget {
+  /// A widget that displays a colour from the palette and allows the user to
+  /// select it to change the colour of a task.
+
   final Color paletteColour;
   final Task task;
 
@@ -23,11 +26,11 @@ class _PaletteColourWidgetState extends ConsumerState<PaletteColourWidget> {
   @override
   Widget build(BuildContext context) {
     final db = ref.read(database.notifier).state;
-
     return InkWell(
       borderRadius: BorderRadius.circular(50),
       onTap: () {
         setState(() {
+          // Update the task colour in the database
           widget.task.taskColour = widget.paletteColour;
           db.updateTask(widget.task.taskID, widget.task);
         });
