@@ -14,10 +14,10 @@ class ForgotPasswordView extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
-      _ForgotPasswordPageWidgetState();
+      _ForgotPasswordViewWidgetState();
 }
 
-class _ForgotPasswordPageWidgetState extends ConsumerState<ForgotPasswordView> {
+class _ForgotPasswordViewWidgetState extends ConsumerState<ForgotPasswordView> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 

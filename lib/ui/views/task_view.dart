@@ -20,10 +20,10 @@ class TaskView extends ConsumerStatefulWidget {
   const TaskView({super.key, required this.task, required this.taskID});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _TaskPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _TaskViewState();
 }
 
-class _TaskPageState extends ConsumerState<TaskView> {
+class _TaskViewState extends ConsumerState<TaskView> {
   @override
   Widget build(BuildContext context) {
     final headingController =

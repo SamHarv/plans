@@ -12,10 +12,10 @@ class SignUpView extends ConsumerStatefulWidget {
   const SignUpView({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _SignUpPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _SignUpViewState();
 }
 
-class _SignUpPageState extends ConsumerState<SignUpView> {
+class _SignUpViewState extends ConsumerState<SignUpView> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
