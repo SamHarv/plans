@@ -1,16 +1,9 @@
-# plans
+# Plans
 
-A new Flutter project.
+A minimal note-taking application to organise your thoughts and life.
 
-## Getting Started
+## Supported Platforms
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- [iOS](https://apps.apple.com/us/app/plans/id6479982953)
+- [Android](https://play.google.com/store/apps/details?id=com.o2tech.plans)
+- [Web](https://plans-6cf22.web.app/)
