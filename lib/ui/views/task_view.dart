@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:beamer/beamer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../widgets/banner_ad_widget.dart';
 import '../widgets/confirm_delete_widget.dart';
 import '../widgets/exit_without_saving_widget.dart';
 import '../widgets/palette_colour_widget.dart';
@@ -209,61 +211,108 @@ class _TaskViewState extends ConsumerState<TaskView> {
           ],
         ),
         backgroundColor: widget.task.taskColour,
-        body: Stack(
+        body: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
-              child: Column(
+            Expanded(
+              child: Stack(
                 children: [
-                  const SizedBox(height: 16),
-                  // Heading field
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: CustomTextFieldWidget(
-                      undoController: headingUndoController,
-                      // onUpdate functionality slowed down the app
-                      onUpdate: (text) {
-                        // widget.task.taskHeading = text;
-                        // db.updateTask(widget.taskID, widget.task);
-                      },
-                      controller: headingController,
-                      hintText: "Click to add heading",
-                      maxLines: 1,
-                      fontSize: 24,
-                      style: headingStyle,
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 16),
+                        // Heading field
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: CustomTextFieldWidget(
+                            undoController: headingUndoController,
+                            // onUpdate functionality slowed down the app
+                            onUpdate: (text) {
+                              // widget.task.taskHeading = text;
+                              // db.updateTask(widget.taskID, widget.task);
+                            },
+                            controller: headingController,
+                            hintText: "Click to add heading",
+                            maxLines: 1,
+                            fontSize: 24,
+                            style: headingStyle,
+                          ),
+                        ),
+                        const Divider(),
+                        // Content field
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Align(
+                              alignment: Alignment.topLeft,
+                              child: CustomTextFieldWidget(
+                                undoController: bodyUndoController,
+                                onUpdate: (text) {
+                                  // Add dot point by entering '.. '
+                                  if (text.substring(
+                                          text.length - 3, text.length) ==
+                                      '.. ') {
+                                    bodyController.text =
+                                        '${text.substring(0, text.length - 3)}• ';
+                                  }
+                                  // If last paragraph/ item starts with a dot, add another
+                                  // on a new line when \n is entered
+                                  List textList = text.split('\n');
+                                  if (textList.length > 1 &&
+                                      text.substring(
+                                              text.length - 1, text.length) ==
+                                          '\n' &&
+                                      textList[textList.length - 2][0] == '•' &&
+                                      textList[textList.length - 2] != '• ') {
+                                    bodyController.text = '$text• ';
+                                  }
+                                },
+                                controller: bodyController,
+                                hintText: "Click to add notes",
+                                maxLines: null,
+                                fontSize: 18,
+                                style: bodyStyle,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const Divider(),
-                  // Content field
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: CustomTextFieldWidget(
-                          undoController: bodyUndoController,
-                          onUpdate: (text) {
-                            // Add dot point by entering '.. '
-                            if (text.substring(text.length - 3, text.length) ==
-                                '.. ') {
-                              bodyController.text =
-                                  '${text.substring(0, text.length - 3)}• ';
-                            }
-                            // If last paragraph/ item starts with a dot, add another
-                            // on a new line when \n is entered
-                            List textList = text.split('\n');
-                            if (textList.length > 1 &&
-                                text.substring(text.length - 1, text.length) ==
-                                    '\n' &&
-                                textList[textList.length - 2][0] == '•' &&
-                                textList[textList.length - 2] != '• ') {
-                              bodyController.text = '$text• ';
-                            }
-                          },
-                          controller: bodyController,
-                          hintText: "Click to add notes",
-                          maxLines: null,
-                          fontSize: 18,
-                          style: bodyStyle,
+                  // Save button
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: FloatingActionButton.small(
+                        backgroundColor: secondaryColour,
+                        onPressed: () {
+                          // Save task if heading is not empty
+                          if (headingController.text != "") {
+                            widget.task.taskHeading = headingController.text;
+                            widget.task.taskContents = bodyController.text;
+                            widget.task.taskColour = widget.task.taskColour;
+                            db.updateTask(widget.task.taskID, widget.task);
+                          }
+                          // Show dialog to confirm save
+                          showDialog(
+                            context: context,
+                            builder: (context) => CustomDialogWidget(
+                              dialogHeading: 'Saved',
+                              dialogActions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text(
+                                    'OK',
+                                    style: bodyStyle,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        child: Icon(
+                          Icons.save,
+                          color: widget.task.taskColour,
                         ),
                       ),
                     ),
@@ -271,45 +320,11 @@ class _TaskViewState extends ConsumerState<TaskView> {
                 ],
               ),
             ),
-            // Save button
-            Align(
-              alignment: Alignment.topRight,
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: FloatingActionButton.small(
-                  backgroundColor: secondaryColour,
-                  onPressed: () {
-                    // Save task if heading is not empty
-                    if (headingController.text != "") {
-                      widget.task.taskHeading = headingController.text;
-                      widget.task.taskContents = bodyController.text;
-                      widget.task.taskColour = widget.task.taskColour;
-                      db.updateTask(widget.task.taskID, widget.task);
-                    }
-                    // Show dialog to confirm save
-                    showDialog(
-                      context: context,
-                      builder: (context) => CustomDialogWidget(
-                        dialogHeading: 'Saved',
-                        dialogActions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: const Text(
-                              'OK',
-                              style: bodyStyle,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                  child: Icon(
-                    Icons.save,
-                    color: widget.task.taskColour,
-                  ),
-                ),
-              ),
-            ),
+            // Show banner ad if not web version
+            kIsWeb
+                ? SizedBox()
+                : Align(
+                    alignment: Alignment.bottomCenter, child: BannerAdWidget()),
           ],
         ),
       ),
